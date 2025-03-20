@@ -1,3 +1,16 @@
 body{
     background-color: #161618;
 }
+
+header,
+footer{
+    color: whitesmoke;
+}
+
+
+a, span{
+    margin: 0em;
+    text-decoration: none;
+    color: whitesmoke;
+}
+

@@ -24,3 +24,12 @@ header div.headerContainer nav ul li{
     margin-left: auto;
     margin-top: auto;
  }
+
+ header nav {
+    font-size: 22px;
+    font-family: Montserrat, sans-serif;
+}
+
+nav ul li{
+    font-weight: bold;
+}
