@@ -1,10 +1,10 @@
-import { useState } from 'react'
 import { Routes, Route } from 'react-router'
 
 import './App.css'
 
 import { Header } from './layout/header/Header'
 import { Home } from './components/pages/home/Home'
+import { Footer } from './layout/footer/Footer'
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         {/* <Route path="/contact" element={<Contact />} /> */}
       </Routes>
     </main>
-    {/* <Footer /> */}
+    <Footer />
     </>
   )
 }

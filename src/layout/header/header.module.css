@@ -1,0 +1,26 @@
+header{
+    margin-top: 10px; 
+    padding-bottom: 10px;
+}
+
+.logo{
+    height: 140px;
+}
+
+header div.headerContainer{
+    width: 100%;
+    display: flex;
+    margin: 0 auto; 
+    align-items: flex-end; 
+}
+
+header div.headerContainer nav ul{ 
+    width: 100%; 
+    display: flex;
+    list-style: none;
+}
+
+header div.headerContainer nav ul li{
+    margin-left: auto;
+    margin-top: auto;
+ }
