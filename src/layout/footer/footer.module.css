@@ -1,0 +1,8 @@
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box;
+}
