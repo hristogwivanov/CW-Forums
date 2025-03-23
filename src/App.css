@@ -6,4 +6,7 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  color: whitesmoke;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
 }

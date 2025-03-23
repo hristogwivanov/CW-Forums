@@ -14,10 +14,10 @@ export const Header = () => {
                             <Link to="/">Forums</Link>
                         </li>
                         <li>
-                            <Link to="/about">Login</Link>
+                            <Link to="/login">Login</Link>
                         </li>
                         <li>
-                            <Link to="/contact">Register</Link>
+                            <Link to="/register">Register</Link>
                         </li>
                     </ul>
                 </nav>

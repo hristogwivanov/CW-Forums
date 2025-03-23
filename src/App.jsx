@@ -3,8 +3,10 @@ import { Routes, Route } from 'react-router'
 import './App.css'
 
 import { Header } from './layout/header/Header'
-import { Home } from './components/pages/home/Home'
 import { Footer } from './layout/footer/Footer'
+import { Home } from './components/pages/home/Home'
+import { Login } from './components/pages/login/Login'
+import { Register } from './components/pages/register/Register'
 
 function App() {
   return (
@@ -13,8 +15,8 @@ function App() {
     <main id="main-content">
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/about" element={<About />} /> */}
-        {/* <Route path="/contact" element={<Contact />} /> */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </main>
     <Footer />

@@ -23,3 +23,15 @@ a, span{
     color: inherit;
 }
 
+input, textarea{
+    background: whitesmoke;
+    padding: 0.5em;
+    margin-top: 0.5em;
+    font-size: 1.6em;
+    border-radius: 0.3em;    
+    border: none;
+    outline: none;
+    width: 16em;
+}
+
+
