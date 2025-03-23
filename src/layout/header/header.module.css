@@ -1,37 +1,42 @@
-header{
-    margin-top: 10px; 
+header {
+    margin-top: 10px;
     padding-bottom: 10px;
 }
 
-.logo{
+.logo {
     height: 140px;
 }
 
-header div.headerContainer{
+header div.headerContainer {
     width: 100%;
     display: flex;
-    margin: 0 auto; 
-    align-items: flex-end; 
+    margin: 0 auto;
+    align-items: flex-end;
 }
 
-header div.headerContainer nav ul{ 
-    width: 100%; 
+header div.headerContainer nav ul {
+    width: 100%;
     display: flex;
     list-style: none;
     justify-content: flex-end;
 }
 
-header div.headerContainer nav ul li{
-    margin: 0 1em;
-    margin-top: auto;
- }
-
- header nav {
+header nav {
     font-size: 22px;
     font-family: Montserrat, sans-serif;
     width: 100%;
 }
 
-nav ul li{
+nav ul li {
     font-weight: bold;
+    transition: color 0.3s ease;
+    margin: 0 1em;
+    margin-top: auto;
+    line-height: 1.2;
+}
+
+nav ul li:hover {
+    font-weight: bold;
+    cursor: pointer;
+    color: #A16BB9;
 }
