@@ -18,16 +18,18 @@ header div.headerContainer nav ul{
     width: 100%; 
     display: flex;
     list-style: none;
+    justify-content: flex-end;
 }
 
 header div.headerContainer nav ul li{
-    margin-left: auto;
+    margin: 0 1em;
     margin-top: auto;
  }
 
  header nav {
     font-size: 22px;
     font-family: Montserrat, sans-serif;
+    width: 100%;
 }
 
 nav ul li{
