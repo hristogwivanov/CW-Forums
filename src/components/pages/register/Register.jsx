@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { Button } from '../../atoms/button/Button';
+import { useNavigate } from 'react-router';
 
 export const Register = () => {
     const [error, setError] = useState('');
@@ -10,8 +11,10 @@ export const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
+    // const { signup } = useAuth();
+    const navigate = useNavigate();
+
+    const registerHandler = async (formData) => {
 
         if (username.length < 3) {
             setError('Username must be at least 3 characters long');
@@ -50,14 +53,15 @@ export const Register = () => {
     return (
         <section id="registerPage">
             {error && <p className="errorMessage">{error}</p>}
-            <form className="registerForm" onSubmit={submitHandler}>
+            {!error && <br />}
+
+            <form id="register" className="registerForm" action={registerHandler}>
                 <div className="inputDiv">
                     <input
                         type="text"
                         placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        required
                     />
                 </div>
                 <div className="inputDiv">
@@ -66,7 +70,6 @@ export const Register = () => {
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required
                     />
                 </div>
                 <div className="inputDiv">
@@ -75,7 +78,6 @@ export const Register = () => {
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
                     />
                 </div>
                 <div className="inputDiv">
@@ -84,17 +86,19 @@ export const Register = () => {
                         placeholder="Confirm password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
                     />
                 </div>
+
                 <Button
                     type="submit"
                     text="Register"
                     disabled={loading}
                 />
+
                 <p className="field">
                     <span>
-                        If you already have a profile, click <Link to="/login">here</Link>
+                        If you already have a profile, click{" "}
+                        <Link to="/login">here</Link>
                     </span>
                 </p>
             </form>

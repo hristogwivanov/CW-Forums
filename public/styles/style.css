@@ -16,6 +16,11 @@ footer{
     color: whitesmoke;
 }
 
+.errorMessage {
+    color: red;
+    font-weight: bold;
+}
+
 
 a, span{
     margin: 0em;
