@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
+
 import { Link } from 'react-router';
 import { Button } from '../../atoms/button/Button';
-import { useNavigate } from 'react-router';
+import { signup } from '../../../services/authService';
 
 export const Register = () => {
     const [error, setError] = useState('');
@@ -11,7 +13,6 @@ export const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // const { signup } = useAuth();
     const navigate = useNavigate();
 
     const registerHandler = async (formData) => {
@@ -44,7 +45,7 @@ export const Register = () => {
             await signup(email, password, username);
             navigate('/');
         } catch (err) {
-            setError(err.message || 'An error occurred while registering');
+            setError('An error occurred while registering');
         } finally {
             setLoading(false);
         }
