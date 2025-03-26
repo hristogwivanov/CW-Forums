@@ -7,10 +7,11 @@ import { Footer } from './layout/footer/Footer'
 import { Home } from './components/pages/home/Home'
 import { Login } from './components/pages/login/Login'
 import { Register } from './components/pages/register/Register'
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
   return (
-    <>
+    <AuthProvider>
     <Header />
     <main id="main-content">
       <Routes>
@@ -20,7 +21,7 @@ function App() {
       </Routes>
     </main>
     <Footer />
-    </>
+    </AuthProvider>
   )
 }
 
