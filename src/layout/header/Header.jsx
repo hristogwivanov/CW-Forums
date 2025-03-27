@@ -16,7 +16,7 @@ export const Header = () => {
   return (
     <header>
       <div className={styles.headerContainer}>
-        <Link to="/">
+        <Link to="/forums">
           <img
             src="/images/CW-logo.png"
             alt="CW Logo"
@@ -28,7 +28,7 @@ export const Header = () => {
             <ul>
               <li>Hello, {userName || 'User'}</li>
               <li>
-                <Link to="/forum">Forum</Link>
+                <Link to="/forums">Forum</Link>
               </li>
               {currentUser && (
                 <li>
@@ -45,7 +45,7 @@ export const Header = () => {
           ) : (
             <ul>
               <li>
-                <Link to="/forum">Forum</Link>
+                <Link to="/forums">Forum</Link>
               </li>
               <li>
                 <Link to="/login">Login</Link>

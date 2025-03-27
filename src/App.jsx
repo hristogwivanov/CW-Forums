@@ -6,6 +6,7 @@ import { Header } from './layout/header/Header'
 import { Footer } from './layout/footer/Footer'
 import { Home } from './components/pages/home/Home'
 import { Login } from './components/pages/login/Login'
+import { Forums } from './components/pages/forums/Forums';
 import { Register } from './components/pages/register/Register'
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forums" element={<Forums />} />
       </Routes>
     </main>
     <Footer />

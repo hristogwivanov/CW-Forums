@@ -27,7 +27,7 @@ export const Login = () => {
 
     try {
       await loginByUsername(username, password);
-      navigate('/');
+      navigate('/forums');
     } catch (err) {
       setError(err.message || 'An error occurred while logging in');
     } finally {
