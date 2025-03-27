@@ -11,6 +11,7 @@ import { Forums } from './components/pages/forums/Forums';
 import { Register } from './components/pages/register/Register'
 import { Profile } from './components/pages/profile/Profile';
 import { Settings } from './components/pages/settings/Settings';
+import { NotFound } from './components/pages/notFound/NotFound';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/forums" element={<Forums />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} /> 
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </main>
     <Footer />
