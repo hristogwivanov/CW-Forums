@@ -3,7 +3,15 @@ import { useAuth } from '../../contexts/AuthContext';
 import styles from './Header.module.css';
 
 export const Header = () => {
-  const { isAuthenticated, userName, currentUser } = useAuth();
+  const { isAuthenticated, userName, currentUser, logout } = useAuth();
+
+  const handleLogout = async () => { 
+    try {
+        await logout();
+    } catch (err) {
+        console.error('Logout error:', err);
+    }
+  };
 
   return (
     <header>
@@ -31,7 +39,7 @@ export const Header = () => {
                 <Link to="/settings">Settings</Link>
               </li>
               <li>
-                <Link to="/logout">Logout</Link>
+              <Link to="#" onClick={handleLogout}>Logout</Link>
               </li>
             </ul>
           ) : (
