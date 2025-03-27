@@ -1,15 +1,15 @@
-import { Link } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import styles from './Header.module.css';
+import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import styles from "./Header.module.css";
 
 export const Header = () => {
   const { isAuthenticated, userName, currentUser, logout } = useAuth();
 
-  const handleLogout = async () => { 
+  const handleLogout = async () => {
     try {
-        await logout();
+      await logout();
     } catch (err) {
-        console.error('Logout error:', err);
+      console.error("Logout error:", err);
     }
   };
 
@@ -26,9 +26,9 @@ export const Header = () => {
         <nav>
           {isAuthenticated ? (
             <ul>
-              <li>Hello, {userName || 'User'}</li>
+              <li>Hello, {userName || "User"}</li>
               <li>
-                <Link to="/forums">Forum</Link>
+                <Link to="/forums">Forums</Link>
               </li>
               {currentUser && (
                 <li>
@@ -39,13 +39,13 @@ export const Header = () => {
                 <Link to="/settings">Settings</Link>
               </li>
               <li>
-              <Link to="#" onClick={handleLogout}>Logout</Link>
+                <Link to="#" onClick={handleLogout}>Logout</Link>
               </li>
             </ul>
           ) : (
             <ul>
               <li>
-                <Link to="/forums">Forum</Link>
+                <Link to="/forums">Forums</Link>
               </li>
               <li>
                 <Link to="/login">Login</Link>

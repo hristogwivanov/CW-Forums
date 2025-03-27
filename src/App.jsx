@@ -2,13 +2,15 @@ import { Routes, Route } from 'react-router'
 
 import './App.css'
 
+import { AuthProvider } from './contexts/AuthContext';
 import { Header } from './layout/header/Header'
 import { Footer } from './layout/footer/Footer'
 import { Home } from './components/pages/home/Home'
 import { Login } from './components/pages/login/Login'
 import { Forums } from './components/pages/forums/Forums';
 import { Register } from './components/pages/register/Register'
-import { AuthProvider } from './contexts/AuthContext';
+import { Profile } from './components/pages/profile/Profile';
+import { Settings } from './components/pages/settings/Settings';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forums" element={<Forums />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Settings />} /> 
       </Routes>
     </main>
     <Footer />
