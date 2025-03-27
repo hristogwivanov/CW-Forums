@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../../firebase';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { auth } from "../../firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const AuthContext = createContext(null);
 
@@ -17,17 +17,21 @@ export function AuthProvider({ children }) {
       setCurrentUser(user);
       setLoading(false);
     });
-
     return unsubscribe;
   }, []);
 
+  function logout() {
+    signOut(auth);
+  }
+
   const isAuthenticated = !!currentUser;
-  const userName = currentUser?.displayName || '';
+  const userName = currentUser?.displayName || "";
 
   const value = {
     currentUser,
     isAuthenticated,
-    userName
+    userName,
+    logout,
   };
 
   return (
