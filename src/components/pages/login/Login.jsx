@@ -71,7 +71,7 @@ export const Login = () => {
 
         <p className="field">
           <span>
-            If you don't have a profile, click <Link to="/register">here</Link>
+            If you don't have a profile, click <Link to="/register" className="purple">here</Link>
           </span>
         </p>
       </form>
