@@ -8,7 +8,7 @@ import {
   collection,
   query,
   where,
-  getDocs
+  getDocs,
 } from 'firebase/firestore';
 
 export async function signup(email, password, username) {
@@ -17,18 +17,18 @@ export async function signup(email, password, username) {
 
   await updateProfile(newUser, { displayName: username });
 
-  await storeUsernameEmailMapping(username, email);
+  await storeUsernameEmailMapping(username, email, 'user');
 
   return newUser;
 }
 
-async function storeUsernameEmailMapping(username, email) {
+async function storeUsernameEmailMapping(username, email, role = 'user') {
   const usersRef = collection(db, 'users');
   await getDocs(query(usersRef, where('username', '==', username))).then(async (snapshot) => {
     if (!snapshot.empty) {
       return;
     }
-    const docData = { username, email };
+    const docData = { username, email, role };
     const { addDoc } = await import('firebase/firestore');
     await addDoc(usersRef, docData);
   });
