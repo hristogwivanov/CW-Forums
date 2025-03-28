@@ -43,7 +43,7 @@ export const Register = () => {
 
         try {
             await signup(email, password, username);
-            navigate('/forums');
+            navigate(-1);
         } catch (err) {
             setError('An error occurred while registering');
         } finally {
