@@ -48,10 +48,10 @@ export const Header = () => {
                 <Link to="/forums">Forums</Link>
               </li>
               <li>
-                <Link to="/login">Login</Link>
+                <Link to="/login" state={{ from: location.pathname }}>Login</Link>
               </li>
               <li>
-                <Link to="/register">Register</Link>
+                <Link to="/register" state={{ from: location.pathname }}>Register</Link>
               </li>
             </ul>
           )}

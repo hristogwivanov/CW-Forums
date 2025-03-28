@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 
 import { Link } from 'react-router';
 import { Button } from '../../atoms/button/Button';
@@ -14,6 +14,7 @@ export const Register = () => {
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const registerHandler = async (formData) => {
 
@@ -43,7 +44,16 @@ export const Register = () => {
 
         try {
             await signup(email, password, username);
-            navigate(-1);
+            
+            const prevRoute = location.state?.from;
+
+            if (prevRoute === '/login' || prevRoute === '/register') {
+              navigate('/forums');
+            } else if (prevRoute) {
+              navigate(prevRoute);
+            } else {
+              navigate('/forums');
+            }
         } catch (err) {
             setError('An error occurred while registering');
         } finally {

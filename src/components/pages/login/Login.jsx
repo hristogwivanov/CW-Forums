@@ -1,35 +1,44 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { Link } from 'react-router';
-import { Button } from '../../atoms/button/Button';
-import { loginByUsername } from '../../../services/authService';
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router";
+import { Link } from "react-router";
+import { Button } from "../../atoms/button/Button";
+import { loginByUsername } from "../../../services/authService";
 
 export const Login = () => {
-  const [error, setError] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [error, setError] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const loginHandler = async (formData) => {
     if (!username.trim()) {
-      setError('Username is required');
+      setError("Username is required");
       return;
     }
     if (!password.trim()) {
-      setError('Password is required');
+      setError("Password is required");
       return;
     }
 
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       await loginByUsername(username, password);
-      navigate(-1);
+      const prevRoute = location.state?.from;
+
+      if (prevRoute === "/login" || prevRoute === "/register") {
+        navigate("/forums");
+      } else if (prevRoute) {
+        navigate(prevRoute);
+      } else {
+        navigate("/forums");
+      }
     } catch (err) {
-      setError(err.message || 'An error occurred while logging in');
+      setError(err.message || "An error occurred while logging in");
     } finally {
       setLoading(false);
     }
@@ -58,16 +67,11 @@ export const Login = () => {
           />
         </div>
 
-        <Button
-          type="submit"
-          text="Login"
-          disabled={loading}
-        />
+        <Button type="submit" text="Login" disabled={loading} />
 
         <p className="field">
           <span>
-            If you don't have a profile, click{' '}
-            <Link to="/register">here</Link>
+            If you don't have a profile, click <Link to="/register">here</Link>
           </span>
         </p>
       </form>
