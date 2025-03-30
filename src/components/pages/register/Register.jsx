@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
+import { useAuth } from '../../../contexts/AuthContext';
 
 import { Link } from 'react-router';
 import { Button } from '../../atoms/button/Button';
@@ -12,6 +13,7 @@ export const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const { updateDisplayName } = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -44,7 +46,7 @@ export const Register = () => {
 
         try {
             await signup(email, password, username);
-            
+            updateDisplayName(username);
             const prevRoute = location.state?.from;
 
             if (prevRoute === '/login' || prevRoute === '/register') {
@@ -55,7 +57,8 @@ export const Register = () => {
               navigate('/forums');
             }
         } catch (err) {
-            setError('An error occurred while registering');
+            setError(err.message || 'An error occurred while registering');
+            console.error('Registration error:', err);
         } finally {
             setLoading(false);
         }
