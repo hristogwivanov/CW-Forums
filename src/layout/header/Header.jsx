@@ -26,7 +26,7 @@ export const Header = () => {
         <nav>
           {isAuthenticated ? (
             <ul>
-              <li>Hello, {userName || "User"}</li>
+              <li>Hi, {userName || "User"}</li>
               <li>
                 <Link to="/forums">Forums</Link>
               </li>
