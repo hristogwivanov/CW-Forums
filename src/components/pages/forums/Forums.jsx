@@ -137,51 +137,6 @@ export const Forums = () => {
             
             {error && <div className={styles.errorMessage}>{error}</div>}
             
-            {showCreateForm && (
-                <div className={styles.categoryForm}>
-                    <h3>Create New Category</h3>
-                    <form onSubmit={handleCreateCategory}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="categoryName">Category Name</label>
-                            <input
-                                type="text"
-                                id="categoryName"
-                                value={newCategoryName}
-                                onChange={(e) => setNewCategoryName(e.target.value)}
-                                required
-                            />
-                        </div>
-                        
-                        <div className={styles.formGroup}>
-                            <label htmlFor="categoryDescription">Description (Optional)</label>
-                            <textarea
-                                id="categoryDescription"
-                                value={newCategoryDescription}
-                                onChange={(e) => setNewCategoryDescription(e.target.value)}
-                                rows="3"
-                                className={styles.textArea}
-                            />
-                        </div>
-                        
-                        <div className={styles.formActions}>
-                            <button 
-                                type="button" 
-                                className={`${styles.formButton} ${styles.cancelButton}`}
-                                onClick={handleCancelCreate}
-                            >
-                                Cancel
-                            </button>
-                            <button 
-                                type="submit" 
-                                className={styles.formButton}
-                            >
-                                Create Category
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
-            
             <div className={styles.categoriesList}>
                 {categories.length === 0 ? (
                     <div className={styles.noCategories}>No categories found</div>
@@ -239,6 +194,51 @@ export const Forums = () => {
                     >
                         Create New Category
                     </button>
+                </div>
+            )}
+            
+            {showCreateForm && (
+                <div className={styles.categoryForm}>
+                    <h3>Create New Category</h3>
+                    <form onSubmit={handleCreateCategory}>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="categoryName">Category Name</label>
+                            <input
+                                type="text"
+                                id="categoryName"
+                                value={newCategoryName}
+                                onChange={(e) => setNewCategoryName(e.target.value)}
+                                required
+                            />
+                        </div>
+                        
+                        <div className={styles.formGroup}>
+                            <label htmlFor="categoryDescription">Description (Optional)</label>
+                            <textarea
+                                id="categoryDescription"
+                                value={newCategoryDescription}
+                                onChange={(e) => setNewCategoryDescription(e.target.value)}
+                                rows="3"
+                                className={styles.textArea}
+                            />
+                        </div>
+                        
+                        <div className={styles.formActions}>
+                            <button 
+                                type="button" 
+                                className={`${styles.formButton} ${styles.cancelButton}`}
+                                onClick={handleCancelCreate}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="submit" 
+                                className={styles.formButton}
+                            >
+                                Create Category
+                            </button>
+                        </div>
+                    </form>
                 </div>
             )}
         </div>
