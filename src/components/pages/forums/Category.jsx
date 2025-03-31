@@ -91,6 +91,26 @@ export const Category = () => {
         }
     };
     
+    const formatDate = (timestamp) => {
+        if (!timestamp) return 'N/A';
+        
+        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        
+        const day = date.getDate();
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+            'July', 'August', 'September', 'October', 'November', 'December'];
+        const month = monthNames[date.getMonth()];
+        const year = date.getFullYear();
+        
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        
+        return `${day} ${month} ${year}, ${hours}:${minutes}`;
+    };
+
     if (loading) {
         return (
             <div className={styles.categoryContainer}>
@@ -209,24 +229,20 @@ export const Category = () => {
                                 <p className={styles.threadPreview}>{thread.preview}</p>
                             </div>
                             <div className={styles.threadAuthor}>
-                                <span>{thread.authorName}</span>
-                                <span className={styles.threadDate}>
-                                    {new Date(thread.createdAt.toDate()).toLocaleDateString()}
-                                </span>
+                                <span>{thread.createdByUsername || 'Anonymous'}</span>
                             </div>
                             <div className={styles.threadReplies}>
                                 {thread.replyCount || 0}
                             </div>
                             <div className={styles.threadLastPost}>
                                 {thread.lastPost ? (
-                                    <>
-                                        <span>by {thread.lastPost.authorName}</span>
-                                        <span className={styles.threadDate}>
-                                            {new Date(thread.lastPost.createdAt.toDate()).toLocaleDateString()}
-                                        </span>
-                                    </>
+                                    <span className={styles.threadDate}>
+                                        {formatDate(thread.lastPost.createdAt)}
+                                    </span>
                                 ) : (
-                                    <span>No replies yet</span>
+                                    <span className={styles.threadDate}>
+                                        {formatDate(thread.createdAt)}
+                                    </span>
                                 )}
                             </div>
                         </div>
