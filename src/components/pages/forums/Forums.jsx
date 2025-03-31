@@ -40,12 +40,9 @@ export const Forums = () => {
     useEffect(() => {
         const checkAdminStatus = async () => {
             if (currentUser) {
-                console.log('Checking admin status for user:', currentUser.uid);
                 const adminStatus = await isUserAdmin(currentUser.uid);
-                console.log('Admin status result:', adminStatus);
                 setIsAdmin(adminStatus);
             } else {
-                console.log('No current user, setting isAdmin to false');
                 setIsAdmin(false);
             }
         };

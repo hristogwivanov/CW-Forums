@@ -168,20 +168,11 @@ export async function isUserAdmin(userId) {
       return false;
     }
     
-    console.log('Checking admin status for userId:', userId);
-    
     const usersRef = collection(db, 'users');
     const usersSnap = await getDocs(usersRef);
-    console.log('Total users in collection:', usersSnap.size);
-    usersSnap.forEach(doc => {
-      console.log('User doc ID:', doc.id);
-      console.log('User data:', doc.data());
-    });
     
     const userRef = doc(db, 'users', userId);
     const userSnap = await getDoc(userRef);
-    
-    console.log('User document exists:', userSnap.exists());
     
     if (userSnap.exists()) {
       const userData = userSnap.data();
