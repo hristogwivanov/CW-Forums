@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useUser } from "../../contexts/UserContext";
 import styles from "./Header.module.css";
 
 export const Header = () => {
-  const { isAuthenticated, userName, currentUser, logout } = useAuth();
+  const { isAuthenticated, logout, currentUser } = useAuth();
+  const { userName } = useUser();
 
   const handleLogout = async () => {
     try {
@@ -26,7 +28,7 @@ export const Header = () => {
         <nav>
           {isAuthenticated ? (
             <ul>
-              <li>Hi, {userName || "User"}</li>
+              <li>{userName ? `Hi, ${userName}` : 'Welcome'}</li>
               <li>
                 <Link to="/forums">Forums</Link>
               </li>

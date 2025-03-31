@@ -3,6 +3,8 @@ import { Routes, Route } from 'react-router'
 import './App.css'
 
 import { AuthProvider } from './contexts/AuthContext';
+import { UserProvider } from './contexts/UserContext';
+
 import { Header } from './layout/header/Header'
 import { Footer } from './layout/footer/Footer'
 import { Home } from './components/pages/home/Home'
@@ -16,19 +18,21 @@ import { NotFound } from './components/pages/notFound/NotFound';
 function App() {
   return (
     <AuthProvider>
-    <Header />
-    <main id="main-content">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forums" element={<Forums />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} /> 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </main>
-    <Footer />
+      <UserProvider>
+        <Header />
+        <main id="main-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forums" element={<Forums />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+      </UserProvider>
     </AuthProvider>
   )
 }

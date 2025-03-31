@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "../../firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { auth } from '../../firebase.js';
+import { onAuthStateChanged } from 'firebase/auth';
+import { signup as signupService, loginByUsername as loginService, logout as logoutService } from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -11,57 +12,63 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [userDisplayName, setUserDisplayName] = useState(() => {
-    return localStorage.getItem('userDisplayName') || "User";
-  });
+  const [authError, setAuthError] = useState(null);
+
+  const clearAuthError = () => {
+    setAuthError(null);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
-        
-        if (user.displayName) {
-          setUserDisplayName(user.displayName);
-          localStorage.setItem('userDisplayName', user.displayName);
-        } else {
-          const storedName = localStorage.getItem('userDisplayName');
-          if (storedName) {
-            setUserDisplayName(storedName);
-          }
-        }
-      } else {
-        setCurrentUser(null);
-      }
+      setCurrentUser(user);
       setLoading(false);
     });
     return unsubscribe;
   }, []);
 
-  const updateDisplayName = (name) => {
-    setUserDisplayName(name);
-    localStorage.setItem('userDisplayName', name);
-  };
-
-  function logout() {
-    localStorage.removeItem('userDisplayName');
-    setUserDisplayName("User");
-    signOut(auth);
+  async function signup(email, password, username) {
+    try {
+      clearAuthError();
+      return await signupService(email, password, username);
+    } catch (error) {
+      setAuthError(error.message);
+      throw error;
+    }
   }
 
-  const isAuthenticated = !!currentUser;
-  const userName = userDisplayName || "User";
+  async function loginByUsername(username, password) {
+    try {
+      clearAuthError();
+      return await loginService(username, password);
+    } catch (error) {
+      setAuthError(error.message);
+      throw error;
+    }
+  }
+
+  async function logout() {
+    try {
+      clearAuthError();
+      await logoutService();
+    } catch (error) {
+      setAuthError(error.message);
+      throw error;
+    }
+  }
 
   const value = {
     currentUser,
-    isAuthenticated,
-    userName,
-    updateDisplayName,
+    isAuthenticated: !!currentUser,
+    signup,
+    loginByUsername,
     logout,
+    authError,
+    clearAuthError
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {loading ? <p>Loading...</p> : children}
+      {!loading ? children : <p>Loading...</p>}
     </AuthContext.Provider>
   );
 }

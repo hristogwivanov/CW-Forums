@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useUser } from '../../../contexts/UserContext';
 
 import { Link } from 'react-router';
 import { Button } from '../../atoms/button/Button';
-import { signup } from '../../../services/authService';
 
 export const Register = () => {
     const [error, setError] = useState('');
@@ -13,7 +13,8 @@ export const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const { updateDisplayName } = useAuth();
+    const { signup,authError, clearAuthError } = useAuth();
+    const { updateDisplayName } = useUser();
 
     const navigate = useNavigate();
     const location = useLocation();

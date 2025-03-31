@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useUser } from "../../../contexts/UserContext";
 import { Link } from "react-router";
 import { Button } from "../../atoms/button/Button";
-import { loginByUsername } from "../../../services/authService";
 
 export const Login = () => {
   const [error, setError] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { loginByUsername, authError } = useAuth();
+  const { updateDisplayName } = useUser();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,7 +30,14 @@ export const Login = () => {
     setLoading(true);
 
     try {
-      await loginByUsername(username, password);
+      const user = await loginByUsername(username, password);
+      
+      if (user.displayName) {
+        updateDisplayName(user.displayName);
+      } else {
+        updateDisplayName(username);
+      }
+      
       const prevRoute = location.state?.from;
 
       if (prevRoute === "/login" || prevRoute === "/register") {
@@ -38,7 +48,8 @@ export const Login = () => {
         navigate("/forums");
       }
     } catch (err) {
-      setError(err.message || "An error occurred while logging in");
+      setError(authError || err.message || "Failed to login");
+      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
