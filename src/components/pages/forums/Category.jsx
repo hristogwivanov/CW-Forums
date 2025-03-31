@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
-import { getThreadsByCategory, getCategoryById } from '../../../services/forumService';
+import { getThreadsByCategory, getCategoryById, createThread } from '../../../services/forumService';
 import styles from './category.module.css';
 
 export const Category = () => {
@@ -9,6 +9,9 @@ export const Category = () => {
     const [threads, setThreads] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [showCreateForm, setShowCreateForm] = useState(false);
+    const [newThreadTitle, setNewThreadTitle] = useState('');
+    const [newThreadContent, setNewThreadContent] = useState('');
     
     const { categoryId } = useParams();
     const { currentUser, isAuthenticated } = useAuth();
@@ -44,11 +47,48 @@ export const Category = () => {
     
     const handleCreateThread = () => {
         if (!isAuthenticated) {
-            navigate('/login', { state: { from: `/forums/category/${categoryId}` } });
+            navigate('/login', { state: { from: `/categories/${categoryId}` } });
             return;
         }
         
-        navigate(`/forums/category/${categoryId}/create-thread`);
+        setShowCreateForm(true);
+    };
+    
+    const handleCancelCreate = () => {
+        setShowCreateForm(false);
+        setNewThreadTitle('');
+        setNewThreadContent('');
+    };
+    
+    const handleSubmitThread = async (e) => {
+        e.preventDefault();
+        
+        if (!isAuthenticated) {
+            setError('You must be logged in to create a thread');
+            return;
+        }
+        
+        try {
+            await createThread(
+                categoryId,
+                newThreadTitle,
+                newThreadContent,
+                currentUser.uid,
+                currentUser.displayName || 'Anonymous'
+            );
+            
+            setNewThreadTitle('');
+            setNewThreadContent('');
+            setShowCreateForm(false);
+            
+            const threadsData = await getThreadsByCategory(categoryId);
+            setThreads(threadsData);
+            
+            setError('');
+        } catch (error) {
+            console.error('Error creating thread:', error);
+            setError('Failed to create thread');
+        }
     };
     
     if (loading) {
@@ -96,6 +136,54 @@ export const Category = () => {
                     </Link>
                 </div>
             </div>
+            
+            {error && <div className={styles.errorMessage}>{error}</div>}
+            
+            {showCreateForm && (
+                <div className={styles.threadForm}>
+                    <h3>Create New Thread</h3>
+                    <form onSubmit={handleSubmitThread}>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="threadTitle">Thread Title</label>
+                            <input
+                                type="text"
+                                id="threadTitle"
+                                value={newThreadTitle}
+                                onChange={(e) => setNewThreadTitle(e.target.value)}
+                                required
+                            />
+                        </div>
+                        
+                        <div className={styles.formGroup}>
+                            <label htmlFor="threadContent">Content</label>
+                            <textarea
+                                id="threadContent"
+                                value={newThreadContent}
+                                onChange={(e) => setNewThreadContent(e.target.value)}
+                                rows="5"
+                                className={styles.textArea}
+                                required
+                            />
+                        </div>
+                        
+                        <div className={styles.formActions}>
+                            <button 
+                                type="button" 
+                                className={`${styles.formButton} ${styles.cancelButton}`}
+                                onClick={handleCancelCreate}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="submit" 
+                                className={styles.formButton}
+                            >
+                                Create Thread
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
             
             {threads.length === 0 ? (
                 <div className={styles.noThreads}>

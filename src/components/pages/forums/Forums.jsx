@@ -6,7 +6,8 @@ import {
     isUserAdmin, 
     createCategory, 
     moveCategoryUp, 
-    moveCategoryDown 
+    moveCategoryDown,
+    deleteCategory
 } from '../../../services/forumService';
 import styles from './forums.module.css';
 
@@ -122,6 +123,19 @@ export const Forums = () => {
         }
     };
 
+    const handleDeleteCategory = async (categoryId, categoryName) => {
+        if (window.confirm(`Are you sure you want to delete the category "${categoryName}"? This action cannot be undone.`)) {
+            try {
+                await deleteCategory(categoryId);
+                loadCategories();
+                setError('');
+            } catch (error) {
+                setError('Failed to delete category');
+                console.error(error);
+            }
+        }
+    };
+
     if (loading && categories.length === 0) {
         return (
             <div className={styles.forumsContainer}>
@@ -167,6 +181,13 @@ export const Forums = () => {
                                                     title="Move Down"
                                                 >
                                                     ↓
+                                                </button>
+                                                <button 
+                                                    className={`${styles.orderButton} ${styles.deleteButton}`}
+                                                    onClick={() => handleDeleteCategory(category.id, category.name)}
+                                                    title="Delete Category"
+                                                >
+                                                    ×
                                                 </button>
                                             </div>
                                         )}

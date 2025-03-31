@@ -231,7 +231,6 @@ export async function updateCategoryOrder(categoryId, newOrder) {
 
 export async function moveCategoryUp(categoryId, currentOrder) {
   try {
-    // Get the category that's one position above this one
     const categoriesRef = collection(db, 'categories');
     const q = query(
       categoriesRef, 
@@ -243,14 +242,12 @@ export async function moveCategoryUp(categoryId, currentOrder) {
     const querySnapshot = await getDocs(q);
     
     if (querySnapshot.empty) {
-      // This is already the top category
       return false;
     }
     
     const aboveCategory = querySnapshot.docs[0];
     const aboveCategoryData = aboveCategory.data();
     
-    // Swap orders
     await updateCategoryOrder(categoryId, aboveCategoryData.order);
     await updateCategoryOrder(aboveCategory.id, currentOrder);
     
@@ -263,7 +260,6 @@ export async function moveCategoryUp(categoryId, currentOrder) {
 
 export async function moveCategoryDown(categoryId, currentOrder) {
   try {
-    // Get the category that's one position below this one
     const categoriesRef = collection(db, 'categories');
     const q = query(
       categoriesRef, 
@@ -275,20 +271,31 @@ export async function moveCategoryDown(categoryId, currentOrder) {
     const querySnapshot = await getDocs(q);
     
     if (querySnapshot.empty) {
-      // This is already the bottom category
       return false;
     }
     
     const belowCategory = querySnapshot.docs[0];
     const belowCategoryData = belowCategory.data();
-    
-    // Swap orders
+
     await updateCategoryOrder(categoryId, belowCategoryData.order);
     await updateCategoryOrder(belowCategory.id, currentOrder);
     
     return true;
   } catch (error) {
     console.error("Error moving category down:", error);
+    throw error;
+  }
+}
+
+export async function deleteCategory(categoryId) {
+  try {
+    const categoryRef = doc(db, 'categories', categoryId);
+    
+    await deleteDoc(categoryRef);
+    
+    return true;
+  } catch (error) {
+    console.error("Error deleting category:", error);
     throw error;
   }
 }
