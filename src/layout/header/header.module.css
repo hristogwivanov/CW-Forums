@@ -35,7 +35,7 @@ nav ul li {
     line-height: 1.2;
 }
 
-nav ul li:hover {
+nav ul li:not(:first-child):hover {
     font-weight: bold;
     cursor: pointer;
     color: #A16BB9;
