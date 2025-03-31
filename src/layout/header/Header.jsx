@@ -11,8 +11,7 @@ export const Header = () => {
     try {
       await logout();
     } catch (err) {
-      console.error("Logout error:", err);
-    }
+      console.error("Logout error:", err);    }
   };
 
   return (

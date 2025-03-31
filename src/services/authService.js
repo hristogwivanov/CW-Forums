@@ -42,17 +42,12 @@ export async function storeUserData(username, email, userId) {
       username,
       email,
       userId,
-      createdAt: new Date()
+      createdAt: new Date(),
+      role: 'user',
+      profilePic: 'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg'
     });
-    
-    const usersRef = collection(db, 'users');
-    const snapshot = await getDocs(query(usersRef, where('username', '==', username)));
-    
-    if (snapshot.empty) {
-      await addDoc(usersRef, { username, email, role: 'user' });
-    }
   } catch (error) {
-    console.warn("Error storing user data:", error.message);
+    throw error;
   }
 }
 
@@ -75,7 +70,7 @@ export async function loginByUsername(username, password) {
   try {
     await updateProfile(user, { displayName: username });
   } catch (profileError) {
-    console.warn("Error updating profile:", profileError.message);
+    throw profileError;
   }
   
   localStorage.setItem('userDisplayName', username);
@@ -83,7 +78,7 @@ export async function loginByUsername(username, password) {
   try {
     await user.reload();
   } catch (reloadError) {
-    console.warn("Error reloading user profile:", reloadError.message);
+    throw reloadError;
   }
   
   return user;

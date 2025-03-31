@@ -1,0 +1,321 @@
+.forumsContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #333;
+}
+
+.forumsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #3d5afe;
+  padding-bottom: 15px;
+}
+
+.forumsHeader h1 {
+  font-size: 2rem;
+  color: #2c2c54;
+  margin: 0;
+}
+
+.createCategoryBtn {
+  background-color: #3d5afe;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.createCategoryBtn:hover {
+  background-color: #304ffe;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.categoriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.categoryCard {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.categoryCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.categoryContent {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.categoryHeader h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.categoryHeader h2 a {
+  text-decoration: none;
+  color: #3d5afe;
+  transition: color 0.2s;
+}
+
+.categoryHeader h2 a:hover {
+  color: #304ffe;
+  text-decoration: underline;
+}
+
+.threadCount {
+  font-size: 0.9rem;
+  color: #666;
+  background-color: #f5f5f5;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.categoryDescription {
+  margin: 0 0 20px 0;
+  color: #555;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.newThreadBtn {
+  background-color: #5c6bc0;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s;
+}
+
+.newThreadBtn:hover {
+  background-color: #3949ab;
+}
+
+.adminControls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #eee;
+}
+
+.editButton, .deleteButton {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s;
+  border: none;
+}
+
+.editButton {
+  background-color: #2196f3;
+  color: white;
+}
+
+.editButton:hover {
+  background-color: #1976d2;
+}
+
+.deleteButton {
+  background-color: #f44336;
+  color: white;
+}
+
+.deleteButton:hover {
+  background-color: #d32f2f;
+}
+
+.loading, .noCategories {
+  text-align: center;
+  padding: 50px 20px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.errorMessage {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border-left: 4px solid #c62828;
+}
+
+.categoryForm {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+.categoryForm h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #3d5afe;
+  font-size: 1.4rem;
+}
+
+.categoryForm h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #3d5afe;
+  font-size: 1.2rem;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #444;
+}
+
+.formGroup input, .formGroup textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.formGroup textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.createButton, .saveButton {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.createButton:hover, .saveButton:hover {
+  background-color: #43a047;
+}
+
+.cancelButton {
+  background-color: #9e9e9e;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.cancelButton:hover {
+  background-color: #757575;
+}
+
+/* Admin suggestion section */
+.adminSuggestion {
+  background-color: #e8f5e9;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.adminSuggestion h2 {
+  color: #2e7d32;
+  margin-top: 0;
+}
+
+.suggestedCategories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.suggestedCategory {
+  background-color: white;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestedCategory h3 {
+  color: #3d5afe;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.suggestedCategory p {
+  color: #555;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.bitcoin {
+  color: #f2a900;
+}
+
+.ethereum {
+  color: #627eea;
+}
+
+.altcoin {
+  color: #50af95; 
+}
+
+@media (max-width: 768px) {
+  .forumsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .suggestedCategories {
+    grid-template-columns: 1fr;
+  }
+  
+  .categoryHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
