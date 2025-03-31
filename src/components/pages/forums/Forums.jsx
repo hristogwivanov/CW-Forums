@@ -133,15 +133,6 @@ export const Forums = () => {
     return (
         <div className={styles.forumsContainer}>
             <div className={styles.forumsHeader}>
-                {isAdmin && (
-                    <button 
-                        className={styles.createCategoryBtn}
-                        onClick={handleShowCreateForm}
-                    >
-                        Create New Category
-                    </button>
-                )}
-                <h1>Crypto Forums</h1>
             </div>
             
             {error && <div className={styles.errorMessage}>{error}</div>}
@@ -239,6 +230,17 @@ export const Forums = () => {
                     ))
                 )}
             </div>
+            
+            {isAdmin && (
+                <div className={styles.bottomActions}>
+                    <button 
+                        className={styles.createCategoryBtn}
+                        onClick={handleShowCreateForm}
+                    >
+                        Create New Category
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
