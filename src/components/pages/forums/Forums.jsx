@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
-import { getCategories, isUserAdmin, createCategory } from '../../../services/forumService';
+import { 
+    getCategories, 
+    isUserAdmin, 
+    createCategory, 
+    moveCategoryUp, 
+    moveCategoryDown 
+} from '../../../services/forumService';
 import styles from './forums.module.css';
 
 export const Forums = () => {
@@ -11,6 +17,7 @@ export const Forums = () => {
     const [isAdmin, setIsAdmin] = useState(false);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
+    const [newCategoryDescription, setNewCategoryDescription] = useState('');
     
     const { currentUser, isAuthenticated } = useAuth();
     const navigate = useNavigate();
@@ -58,6 +65,7 @@ export const Forums = () => {
     const handleShowCreateForm = () => {
         setShowCreateForm(true);
         setNewCategoryName('');
+        setNewCategoryDescription('');
     };
 
     const handleCancelCreate = () => {
@@ -74,12 +82,41 @@ export const Forums = () => {
         
         try {
             setLoading(true);
-            await createCategory(newCategoryName.trim());
+            await createCategory(newCategoryName.trim(), newCategoryDescription.trim());
             setShowCreateForm(false);
             setNewCategoryName('');
+            setNewCategoryDescription('');
             await loadCategories();
         } catch (err) {
             setError('Failed to create category: ' + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleMoveUp = async (categoryId, currentOrder) => {
+        try {
+            setLoading(true);
+            const success = await moveCategoryUp(categoryId, currentOrder);
+            if (success) {
+                await loadCategories();
+            }
+        } catch (err) {
+            setError('Failed to move category: ' + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleMoveDown = async (categoryId, currentOrder) => {
+        try {
+            setLoading(true);
+            const success = await moveCategoryDown(categoryId, currentOrder);
+            if (success) {
+                await loadCategories();
+            }
+        } catch (err) {
+            setError('Failed to move category: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -124,6 +161,17 @@ export const Forums = () => {
                             />
                         </div>
                         
+                        <div className={styles.formGroup}>
+                            <label htmlFor="categoryDescription">Description (Optional)</label>
+                            <textarea
+                                id="categoryDescription"
+                                value={newCategoryDescription}
+                                onChange={(e) => setNewCategoryDescription(e.target.value)}
+                                rows="3"
+                                className={styles.textArea}
+                            />
+                        </div>
+                        
                         <div className={styles.formActions}>
                             <button 
                                 type="button" 
@@ -147,29 +195,45 @@ export const Forums = () => {
                 {categories.length === 0 ? (
                     <div className={styles.noCategories}>No categories found</div>
                 ) : (
-                    categories.map(category => (
+                    categories.map((category) => (
                         <div key={category.id} className={styles.categoryCard}>
                             <div className={styles.categoryContent}>
                                 <div className={styles.categoryHeader}>
-                                    <h2>
-                                        <Link to={`/forums/category/${category.id}`}>
-                                            {category.name}
-                                        </Link>
-                                    </h2>
+                                    <div className={styles.titleWithControls}>
+                                        <h2>
+                                            <Link to={`/categories/${category.id}`} className={styles.categoryLink}>
+                                                {category.name}
+                                            </Link>
+                                        </h2>
+                                        
+                                        {isAdmin && (
+                                            <div className={styles.categoryAdminControls}>
+                                                <button 
+                                                    className={`${styles.orderButton} ${styles.upButton}`}
+                                                    onClick={() => handleMoveUp(category.id, category.order)}
+                                                    title="Move Up"
+                                                >
+                                                    ↑
+                                                </button>
+                                                <button 
+                                                    className={`${styles.orderButton} ${styles.downButton}`}
+                                                    onClick={() => handleMoveDown(category.id, category.order)}
+                                                    title="Move Down"
+                                                >
+                                                    ↓
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
                                     <span className={styles.threadCount}>
-                                        {category.threadCount || 0} threads
+                                        {category.threadCount} {category.threadCount === 1 ? 'Thread' : 'Threads'}
                                     </span>
                                 </div>
+                                
                                 {category.description && (
                                     <p className={styles.categoryDescription}>{category.description}</p>
                                 )}
-                                
-                                <button 
-                                    className={styles.newThreadBtn}
-                                    onClick={() => handleCreateThread(category.id)}
-                                >
-                                    New Thread
-                                </button>
                             </div>
                         </div>
                     ))

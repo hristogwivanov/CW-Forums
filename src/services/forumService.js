@@ -11,7 +11,8 @@ import {
   where,
   serverTimestamp,
   deleteDoc,
-  increment
+  increment,
+  limit
 } from 'firebase/firestore';
 
 export async function getCategories() {
@@ -189,7 +190,7 @@ export async function isUserAdmin(userId) {
   }
 }
 
-export async function createCategory(name) {
+export async function createCategory(name, description = '') {
   try {
     const categoriesRef = collection(db, 'categories');
     
@@ -199,7 +200,7 @@ export async function createCategory(name) {
     
     const newCategory = {
       name: name,
-      description: '',
+      description: description,
       threadCount: 0,
       order: highestOrder + 1,
       createdAt: serverTimestamp()
@@ -211,6 +212,83 @@ export async function createCategory(name) {
       ...newCategory
     };
   } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateCategoryOrder(categoryId, newOrder) {
+  try {
+    const categoryRef = doc(db, 'categories', categoryId);
+    await updateDoc(categoryRef, {
+      order: newOrder
+    });
+    return true;
+  } catch (error) {
+    console.error("Error updating category order:", error);
+    throw error;
+  }
+}
+
+export async function moveCategoryUp(categoryId, currentOrder) {
+  try {
+    // Get the category that's one position above this one
+    const categoriesRef = collection(db, 'categories');
+    const q = query(
+      categoriesRef, 
+      where('order', '<', currentOrder),
+      orderBy('order', 'desc'),
+      limit(1)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      // This is already the top category
+      return false;
+    }
+    
+    const aboveCategory = querySnapshot.docs[0];
+    const aboveCategoryData = aboveCategory.data();
+    
+    // Swap orders
+    await updateCategoryOrder(categoryId, aboveCategoryData.order);
+    await updateCategoryOrder(aboveCategory.id, currentOrder);
+    
+    return true;
+  } catch (error) {
+    console.error("Error moving category up:", error);
+    throw error;
+  }
+}
+
+export async function moveCategoryDown(categoryId, currentOrder) {
+  try {
+    // Get the category that's one position below this one
+    const categoriesRef = collection(db, 'categories');
+    const q = query(
+      categoriesRef, 
+      where('order', '>', currentOrder),
+      orderBy('order', 'asc'),
+      limit(1)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      // This is already the bottom category
+      return false;
+    }
+    
+    const belowCategory = querySnapshot.docs[0];
+    const belowCategoryData = belowCategory.data();
+    
+    // Swap orders
+    await updateCategoryOrder(categoryId, belowCategoryData.order);
+    await updateCategoryOrder(belowCategory.id, currentOrder);
+    
+    return true;
+  } catch (error) {
+    console.error("Error moving category down:", error);
     throw error;
   }
 }

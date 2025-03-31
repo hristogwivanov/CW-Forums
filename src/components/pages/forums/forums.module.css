@@ -48,13 +48,11 @@
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
 }
 
 .categoryCard:hover {
-  transform: translateY(-3px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -68,6 +66,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+}
+
+.titleWithControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .categoryHeader h2 {
@@ -87,6 +91,12 @@
   text-decoration: underline;
 }
 
+.categoryHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .threadCount {
   font-size: 0.9rem;
   color: #666;
@@ -102,18 +112,46 @@
   line-height: 1.5;
 }
 
-.newThreadBtn {
-  background-color: #83B925;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: background-color 0.3s;
+.categoryAdminControls {
+  display: flex;
+  gap: 3px;
 }
 
-.newThreadBtn:hover {
+.orderButton {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  padding: 0;
+  aspect-ratio: 1 / 1;
+  line-height: 1;
+  margin: 0 0.3em;
+}
+
+.upButton {
+  background-color: #A16BB9;
+  color: white;
+}
+
+.upButton:hover {
+  background-color: #8a59a0;
+}
+
+.downButton {
+  background-color: #83B925;
+  color: white;
+}
+
+.downButton:hover {
   background-color: #6fa31e;
 }
 
@@ -151,6 +189,21 @@
 
 .deleteButton:hover {
   background-color: #d32f2f;
+}
+
+.newThreadBtn {
+  background-color: #83B925;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s;
+}
+
+.newThreadBtn:hover {
+  background-color: #6fa31e;
 }
 
 .loading, .noCategories {
@@ -219,6 +272,21 @@
   display: flex;
   gap: 10px;
   margin-top: 20px;
+}
+
+.formButton {
+  background-color: #83B925;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.formButton:hover {
+  background-color: #6fa31e;
 }
 
 .createButton, .saveButton {
