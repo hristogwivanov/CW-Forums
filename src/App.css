@@ -10,3 +10,7 @@
   font-family: 'Montserrat', sans-serif;
   box-sizing: border-box;
 }
+
+#main-content {
+  padding-top: 140px;
+}
