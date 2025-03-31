@@ -164,7 +164,6 @@ export async function createPost(threadId, content, userId, username) {
 export async function isUserAdmin(userId) {
   try {
     if (!userId) {
-      console.log('No userId provided to isUserAdmin');
       return false;
     }
     
@@ -183,10 +182,35 @@ export async function isUserAdmin(userId) {
         return false;
       }
     }
-    
     return false;
   } catch (error) {
     console.error("Error checking admin status:", error);
     return false;
+  }
+}
+
+export async function createCategory(name) {
+  try {
+    const categoriesRef = collection(db, 'categories');
+    
+    const q = query(categoriesRef, orderBy('order', 'desc'));
+    const querySnapshot = await getDocs(q);
+    const highestOrder = querySnapshot.empty ? 0 : querySnapshot.docs[0].data().order || 0;
+    
+    const newCategory = {
+      name: name,
+      description: '',
+      threadCount: 0,
+      order: highestOrder + 1,
+      createdAt: serverTimestamp()
+    };
+    
+    const docRef = await addDoc(categoriesRef, newCategory);
+    return {
+      id: docRef.id,
+      ...newCategory
+    };
+  } catch (error) {
+    throw error;
   }
 }
