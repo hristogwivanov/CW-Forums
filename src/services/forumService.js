@@ -129,6 +129,12 @@ export async function createThread(categoryId, title, content, userId, username)
     };
     
     await addDoc(postsRef, newPost);
+    
+    const categoryRef = doc(db, 'categories', categoryId);
+    await updateDoc(categoryRef, {
+      threadCount: increment(1)
+    });
+    
     return threadDocRef.id;
   } catch (error) {
     console.error("Error creating thread:", error);
