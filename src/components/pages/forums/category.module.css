@@ -107,7 +107,7 @@
   
   .threadTitle a {
     text-decoration: none;
-    color: #3d5afe;
+    color: #673ab7;
     font-weight: 500;
     font-size: 1.1rem;
     transition: color 0.2s;
@@ -116,7 +116,7 @@
   }
   
   .threadTitle a:hover {
-    color: #304ffe;
+    color: #5e35b1;
     text-decoration: underline;
   }
   

@@ -200,8 +200,8 @@ export const Category = () => {
             <Modal 
                 isOpen={modalOpen} 
                 onClose={() => setModalOpen(false)}
+                title={modalMode === 'create' ? 'Create New Thread' : 'Edit Thread'}
             >
-                <h3>{modalMode === 'create' ? 'Create New Thread' : 'Edit Thread'}</h3>
                 <form onSubmit={handleSubmitThread}>
                     <div className={styles.formGroup}>
                         <label htmlFor="threadTitle">Thread Title</label>
@@ -221,7 +221,6 @@ export const Category = () => {
                             value={newThreadContent}
                             onChange={(e) => setNewThreadContent(e.target.value)}
                             rows="5"
-                            className={styles.textArea}
                             required
                         />
                     </div>
