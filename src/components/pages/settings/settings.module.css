@@ -153,3 +153,41 @@
   border: 1px solid #4caf50;
   color: #81c784;
 }
+
+.dangerZone {
+  border: 1px solid #d32f2f;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: rgba(211, 47, 47, 0.05);
+}
+
+.dangerZone h3 {
+  color: #d32f2f;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.deleteConfirmation {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #2d2d39;
+  border: 1px solid #d32f2f;
+}
+
+.warningText {
+  color: #ff6b6b;
+  font-weight: 500;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.dangerButton {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.dangerButton:hover {
+  background-color: #b71c1c;
+}
