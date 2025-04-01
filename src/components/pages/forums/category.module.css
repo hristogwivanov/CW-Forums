@@ -96,6 +96,10 @@
     background-color: #f9f9f9;
   }
   
+  .threadTitle {
+    text-align: left;
+  }
+  
   .threadTitle a {
     text-decoration: none;
     color: #3d5afe;
