@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
-import { getThreadsByCategory, getCategoryById, createThread } from '../../../services/forumService';
+import { getThreadsByCategory, getCategoryById, createThread, updateThread, deleteThread, isUserAdmin, isUserModerator } from '../../../services/forumService';
+import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { db } from '../../../../firebase.js';
 import styles from './category.module.css';
+import Modal from '../../../components/organisms/modals/Modal';
 
 export const Category = () => {
     const [category, setCategory] = useState(null);
@@ -12,6 +15,9 @@ export const Category = () => {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newThreadTitle, setNewThreadTitle] = useState('');
     const [newThreadContent, setNewThreadContent] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalMode, setModalMode] = useState('create');
+    const [selectedThread, setSelectedThread] = useState(null);
     
     const { categoryId } = useParams();
     const { currentUser, isAuthenticated } = useAuth();
@@ -51,11 +57,12 @@ export const Category = () => {
             return;
         }
         
-        setShowCreateForm(true);
+        setModalMode('create');
+        setModalOpen(true);
     };
     
     const handleCancelCreate = () => {
-        setShowCreateForm(false);
+        setModalOpen(false);
         setNewThreadTitle('');
         setNewThreadContent('');
     };
@@ -69,17 +76,25 @@ export const Category = () => {
         }
         
         try {
-            await createThread(
-                categoryId,
-                newThreadTitle,
-                newThreadContent,
-                currentUser.uid,
-                currentUser.displayName || 'Anonymous'
-            );
+            if (modalMode === 'create') {
+                await createThread(
+                    categoryId,
+                    newThreadTitle,
+                    newThreadContent,
+                    currentUser.uid,
+                    currentUser.displayName || 'Anonymous'
+                );
+            } else if (modalMode === 'edit') {
+                await updateThread(
+                    selectedThread.id,
+                    newThreadTitle,
+                    newThreadContent
+                );
+            }
             
             setNewThreadTitle('');
             setNewThreadContent('');
-            setShowCreateForm(false);
+            setModalOpen(false);
             
             const threadsData = await getThreadsByCategory(categoryId);
             setThreads(threadsData);
@@ -89,6 +104,29 @@ export const Category = () => {
             console.error('Error creating thread:', error);
             setError('Failed to create thread');
         }
+    };
+    
+    const handleEditThread = (thread) => {
+        setModalMode('edit');
+        setSelectedThread(thread);
+        setNewThreadTitle(thread.title);
+        setNewThreadContent(thread.content);
+        setModalOpen(true);
+    };
+    
+    const handleDeleteThread = async (threadId) => {
+        try {
+            await deleteThread(threadId);
+            const threadsData = await getThreadsByCategory(categoryId);
+            setThreads(threadsData);
+        } catch (error) {
+            console.error('Error deleting thread:', error);
+            setError('Failed to delete thread');
+        }
+    };
+    
+    const canManageThread = (thread) => {
+        return isUserAdmin(currentUser) || isUserModerator(currentUser) || thread.createdBy === currentUser.uid;
     };
     
     const formatDate = (timestamp) => {
@@ -159,51 +197,52 @@ export const Category = () => {
             
             {error && <div className={styles.errorMessage}>{error}</div>}
             
-            {showCreateForm && (
-                <div className={styles.threadForm}>
-                    <h3>Create New Thread</h3>
-                    <form onSubmit={handleSubmitThread}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="threadTitle">Thread Title</label>
-                            <input
-                                type="text"
-                                id="threadTitle"
-                                value={newThreadTitle}
-                                onChange={(e) => setNewThreadTitle(e.target.value)}
-                                required
-                            />
-                        </div>
-                        
-                        <div className={styles.formGroup}>
-                            <label htmlFor="threadContent">Content</label>
-                            <textarea
-                                id="threadContent"
-                                value={newThreadContent}
-                                onChange={(e) => setNewThreadContent(e.target.value)}
-                                rows="5"
-                                className={styles.textArea}
-                                required
-                            />
-                        </div>
-                        
-                        <div className={styles.formActions}>
-                            <button 
-                                type="button" 
-                                className={`${styles.formButton} ${styles.cancelButton}`}
-                                onClick={handleCancelCreate}
-                            >
-                                Cancel
-                            </button>
-                            <button 
-                                type="submit" 
-                                className={styles.formButton}
-                            >
-                                Create Thread
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
+            <Modal 
+                isOpen={modalOpen} 
+                onClose={() => setModalOpen(false)}
+            >
+                <h3>{modalMode === 'create' ? 'Create New Thread' : 'Edit Thread'}</h3>
+                <form onSubmit={handleSubmitThread}>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="threadTitle">Thread Title</label>
+                        <input
+                            type="text"
+                            id="threadTitle"
+                            value={newThreadTitle}
+                            onChange={(e) => setNewThreadTitle(e.target.value)}
+                            required
+                        />
+                    </div>
+                    
+                    <div className={styles.formGroup}>
+                        <label htmlFor="threadContent">Content</label>
+                        <textarea
+                            id="threadContent"
+                            value={newThreadContent}
+                            onChange={(e) => setNewThreadContent(e.target.value)}
+                            rows="5"
+                            className={styles.textArea}
+                            required
+                        />
+                    </div>
+                    
+                    <div className={styles.formActions}>
+                        <button 
+                            type="button" 
+                            className={`${styles.formButton} ${styles.cancelButton}`}
+                            onClick={handleCancelCreate}
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit" 
+                            className={styles.formButton}
+                        >
+                            {modalMode === 'create' ? 'Create Thread' : 'Save Changes'}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
             
             {threads.length === 0 ? (
                 <div className={styles.noThreads}>
@@ -217,6 +256,7 @@ export const Category = () => {
                         <div className={styles.threadAuthor}>Author</div>
                         <div className={styles.threadReplies}>Replies</div>
                         <div className={styles.threadLastPost}>Last Post</div>
+                        <div className={styles.threadActions}>Actions</div>
                     </div>
                     
                     {threads.map(thread => (
@@ -243,6 +283,26 @@ export const Category = () => {
                                     <span className={styles.threadDate}>
                                         {formatDate(thread.createdAt)}
                                     </span>
+                                )}
+                            </div>
+                            <div className={styles.threadActions}>
+                                {canManageThread(thread) && (
+                                    <>
+                                        <button 
+                                            className={`${styles.orderButton} ${styles.editButton}`}
+                                            onClick={() => handleEditThread(thread)}
+                                            title="Edit Thread"
+                                        >
+                                            ✎
+                                        </button>
+                                        <button 
+                                            className={`${styles.orderButton} ${styles.deleteButton}`}
+                                            onClick={() => handleDeleteThread(thread.id)}
+                                            title="Delete Thread"
+                                        >
+                                            ✕
+                                        </button>
+                                    </>
                                 )}
                             </div>
                         </div>

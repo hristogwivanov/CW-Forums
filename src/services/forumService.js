@@ -196,6 +196,31 @@ export async function isUserAdmin(userId) {
   }
 }
 
+export async function isUserModerator(userId) {
+  try {
+    if (!userId) {
+      return false;
+    }
+    
+    const userRef = doc(db, 'users', userId);
+    const userSnap = await getDoc(userRef);
+    
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      
+      if (userData.hasOwnProperty('role')) {
+        return userData.role === 'moderator';
+      } else {
+        return false;
+      }
+    }
+    return false;
+  } catch (error) {
+    console.error("Error checking moderator status:", error);
+    return false;
+  }
+}
+
 export async function createCategory(name, description = '') {
   try {
     const categoriesRef = collection(db, 'categories');
@@ -317,6 +342,75 @@ export async function deleteCategory(categoryId) {
     return true;
   } catch (error) {
     console.error("Error deleting category:", error);
+    throw error;
+  }
+}
+
+export async function updateThread(threadId, title, content) {
+  try {
+    const threadRef = doc(db, 'threads', threadId);
+    await updateDoc(threadRef, {
+      title: title,
+      updatedAt: serverTimestamp()
+    });
+    
+    const postsRef = collection(db, 'posts');
+    const q = query(
+      postsRef,
+      where('threadId', '==', threadId),
+      orderBy('createdAt', 'asc'),
+      limit(1)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const firstPost = querySnapshot.docs[0];
+      const postRef = doc(db, 'posts', firstPost.id);
+      await updateDoc(postRef, {
+        content: content,
+        updatedAt: serverTimestamp()
+      });
+    }
+    
+    return threadId;
+  } catch (error) {
+    console.error("Error updating thread:", error);
+    throw error;
+  }
+}
+
+export async function deleteThread(threadId) {
+  try {
+    const threadRef = doc(db, 'threads', threadId);
+    const threadSnap = await getDoc(threadRef);
+    
+    if (!threadSnap.exists()) {
+      throw new Error('Thread not found');
+    }
+    
+    const threadData = threadSnap.data();
+    const categoryId = threadData.categoryId;
+    
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, where('threadId', '==', threadId));
+    const querySnapshot = await getDocs(q);
+    
+    const deletionPromises = querySnapshot.docs.map(postDoc => 
+      deleteDoc(doc(db, 'posts', postDoc.id))
+    );
+    
+    await Promise.all(deletionPromises);
+    
+    await deleteDoc(threadRef);
+    
+    const categoryRef = doc(db, 'categories', categoryId);
+    await updateDoc(categoryRef, {
+      threadCount: increment(-1)
+    });
+    
+    return true;
+  } catch (error) {
+    console.error("Error deleting thread:", error);
     throw error;
   }
 }

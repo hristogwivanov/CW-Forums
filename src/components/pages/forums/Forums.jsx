@@ -198,7 +198,6 @@ export const Forums = () => {
             
             {error && <div className={styles.errorMessage}>{error}</div>}
 
-            {/* Create Category Modal */}
             <Modal 
                 isOpen={showCreateForm} 
                 onClose={handleCancelCreate}
@@ -244,7 +243,6 @@ export const Forums = () => {
                 </form>
             </Modal>
 
-            {/* Edit Category Modal */}
             <Modal 
                 isOpen={editingCategory !== null} 
                 onClose={handleCancelEdit}
