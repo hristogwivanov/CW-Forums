@@ -135,12 +135,6 @@ export const Thread = () => {
     }
     
     setNewThreadTitle(thread.title);
-    
-    if (posts.length > 0) {
-      setEditedPostContent(posts[0].content);
-      setEditingPostId(posts[0].id);
-    }
-    
     setEditingThread(true);
   };
 
@@ -156,7 +150,7 @@ export const Thread = () => {
       await updateThread(
         threadId,
         newThreadTitle,
-        editedPostContent,
+        null,
         currentUser.uid
       );
       
@@ -165,7 +159,6 @@ export const Thread = () => {
       setPosts(updatedPosts);
       
       setEditingThread(false);
-      setEditingPostId(null);
       setError('');
     } catch (err) {
       console.error('Error updating thread:', err);
@@ -177,7 +170,6 @@ export const Thread = () => {
 
   const handleCancelEditThread = () => {
     setEditingThread(false);
-    setEditingPostId(null);
   };
 
   const handleDeleteThread = () => {

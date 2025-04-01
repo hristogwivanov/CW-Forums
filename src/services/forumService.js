@@ -383,22 +383,24 @@ export async function updateThread(threadId, title, content, userId) {
       updatedAt: serverTimestamp()
     });
     
-    const postsRef = collection(db, 'posts');
-    const q = query(
-      postsRef,
-      where('threadId', '==', threadId),
-      orderBy('createdAt', 'asc'),
-      limit(1)
-    );
-    
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      const firstPost = querySnapshot.docs[0];
-      const postRef = doc(db, 'posts', firstPost.id);
-      await updateDoc(postRef, {
-        content: content,
-        updatedAt: serverTimestamp()
-      });
+    if (content !== null) {
+      const postsRef = collection(db, 'posts');
+      const q = query(
+        postsRef,
+        where('threadId', '==', threadId),
+        orderBy('createdAt', 'asc'),
+        limit(1)
+      );
+      
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const firstPost = querySnapshot.docs[0];
+        const postRef = doc(db, 'posts', firstPost.id);
+        await updateDoc(postRef, {
+          content: content,
+          updatedAt: serverTimestamp()
+        });
+      }
     }
     
     return threadId;
