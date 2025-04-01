@@ -185,7 +185,6 @@ export const Forums = () => {
     return (
         <div className={styles.forumsContainer}>
             <div className={styles.forumsHeader}>
-                <h1>Forums</h1>
                 {isAdmin && (
                     <button 
                         className={styles.createCategoryBtn}
