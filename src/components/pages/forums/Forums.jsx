@@ -10,6 +10,7 @@ import {
     deleteCategory,
     updateCategory
 } from '../../../services/forumService';
+import Modal from '../../organisms/modals/Modal';
 import styles from './forums.module.css';
 
 export const Forums = () => {
@@ -184,13 +185,72 @@ export const Forums = () => {
     return (
         <div className={styles.forumsContainer}>
             <div className={styles.forumsHeader}>
+                <h1>Forums</h1>
+                {isAdmin && (
+                    <button 
+                        className={styles.createCategoryBtn}
+                        onClick={handleShowCreateForm}
+                    >
+                        Create Category
+                    </button>
+                )}
             </div>
             
             {error && <div className={styles.errorMessage}>{error}</div>}
 
-            {editingCategory && (
-                <div className={styles.formContainer}>
-                    <h3>Edit Category</h3>
+            {/* Create Category Modal */}
+            <Modal 
+                isOpen={showCreateForm} 
+                onClose={handleCancelCreate}
+                title="Create New Category"
+            >
+                <form onSubmit={handleCreateCategory}>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="categoryName">Category Name</label>
+                        <input
+                            type="text"
+                            id="categoryName"
+                            value={newCategoryName}
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                            required
+                        />
+                    </div>
+                    
+                    <div className={styles.formGroup}>
+                        <label htmlFor="categoryDescription">Description (optional)</label>
+                        <textarea
+                            id="categoryDescription"
+                            value={newCategoryDescription}
+                            onChange={(e) => setNewCategoryDescription(e.target.value)}
+                            rows="3"
+                        />
+                    </div>
+                    
+                    <div className={styles.formActions}>
+                        <button 
+                            type="button" 
+                            className={`${styles.formButton} ${styles.cancelButton}`}
+                            onClick={handleCancelCreate}
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit" 
+                            className={styles.formButton}
+                        >
+                            Create Category
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+
+            {/* Edit Category Modal */}
+            <Modal 
+                isOpen={editingCategory !== null} 
+                onClose={handleCancelEdit}
+                title="Edit Category"
+            >
+                {editingCategory && (
                     <form onSubmit={handleUpdateCategory}>
                         <div className={styles.formGroup}>
                             <label htmlFor="editCategoryName">Category Name</label>
@@ -229,8 +289,8 @@ export const Forums = () => {
                             </button>
                         </div>
                     </form>
-                </div>
-            )}
+                )}
+            </Modal>
             
             <div className={styles.categoriesList}>
                 {categories.length === 0 ? (
@@ -294,62 +354,6 @@ export const Forums = () => {
                     ))
                 )}
             </div>
-            
-            {isAdmin && (
-                <div className={styles.bottomActions}>
-                    <button 
-                        className={styles.createCategoryBtn}
-                        onClick={handleShowCreateForm}
-                    >
-                        Create New Category
-                    </button>
-                </div>
-            )}
-            
-            {showCreateForm && (
-                <div className={styles.categoryForm}>
-                    <h3>Create New Category</h3>
-                    <form onSubmit={handleCreateCategory}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="categoryName">Category Name</label>
-                            <input
-                                type="text"
-                                id="categoryName"
-                                value={newCategoryName}
-                                onChange={(e) => setNewCategoryName(e.target.value)}
-                                required
-                            />
-                        </div>
-                        
-                        <div className={styles.formGroup}>
-                            <label htmlFor="categoryDescription">Description (Optional)</label>
-                            <textarea
-                                id="categoryDescription"
-                                value={newCategoryDescription}
-                                onChange={(e) => setNewCategoryDescription(e.target.value)}
-                                rows="3"
-                                className={styles.textArea}
-                            />
-                        </div>
-                        
-                        <div className={styles.formActions}>
-                            <button 
-                                type="button" 
-                                className={`${styles.formButton} ${styles.cancelButton}`}
-                                onClick={handleCancelCreate}
-                            >
-                                Cancel
-                            </button>
-                            <button 
-                                type="submit" 
-                                className={styles.formButton}
-                            >
-                                Create Category
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
         </div>
     );
 };

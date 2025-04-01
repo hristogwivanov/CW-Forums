@@ -397,6 +397,55 @@
   margin-top: 30px;
 }
 
+/* Modal form styling */
+.formButton {
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin: 0 5px;
+}
+
+.formButton:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.formButton:focus {
+  outline: none;
+}
+
+.formButton:not(.cancelButton) {
+  background-color: #83B925;
+  color: white;
+}
+
+.formButton:not(.cancelButton):hover {
+  background-color: #6fa31e;
+}
+
+.cancelButton {
+  background-color: #f5f5f5;
+  color: #555;
+}
+
+.cancelButton:hover {
+  background-color: #e0e0e0;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  gap: 10px;
+}
+
 @media (max-width: 768px) {
   .forumsHeader {
     flex-direction: column;
