@@ -222,6 +222,21 @@ export async function createCategory(name, description = '') {
   }
 }
 
+export async function updateCategory(categoryId, name, description) {
+  try {
+    const categoryRef = doc(db, 'categories', categoryId);
+    await updateDoc(categoryRef, {
+      name: name,
+      description: description
+    });
+    
+    return true;
+  } catch (error) {
+    console.error("Error updating category:", error);
+    throw error;
+  }
+}
+
 export async function updateCategoryOrder(categoryId, newOrder) {
   try {
     const categoryRef = doc(db, 'categories', categoryId);

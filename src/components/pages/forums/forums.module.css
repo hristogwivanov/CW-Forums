@@ -165,6 +165,24 @@
   background-color: #6fa31e;
 }
 
+.editButton.orderButton {
+  background-color: #2196F3;
+  color: white;
+}
+
+.editButton.orderButton:hover {
+  background-color: #0b7dda;
+}
+
+.deleteButton {
+  background-color: #f44336;
+  color: white;
+}
+
+.deleteButton:hover {
+  background-color: #d32f2f;
+}
+
 .adminControls {
   display: flex;
   justify-content: flex-end;

@@ -7,7 +7,8 @@ import {
     createCategory, 
     moveCategoryUp, 
     moveCategoryDown,
-    deleteCategory
+    deleteCategory,
+    updateCategory
 } from '../../../services/forumService';
 import styles from './forums.module.css';
 
@@ -19,6 +20,9 @@ export const Forums = () => {
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
     const [newCategoryDescription, setNewCategoryDescription] = useState('');
+    const [editingCategory, setEditingCategory] = useState(null);
+    const [editCategoryName, setEditCategoryName] = useState('');
+    const [editCategoryDescription, setEditCategoryDescription] = useState('');
     
     const { currentUser, isAuthenticated } = useAuth();
     const navigate = useNavigate();
@@ -136,6 +140,39 @@ export const Forums = () => {
         }
     };
 
+    const handleEditCategory = (category) => {
+        setEditingCategory(category);
+        setEditCategoryName(category.name);
+        setEditCategoryDescription(category.description || '');
+    };
+
+    const handleCancelEdit = () => {
+        setEditingCategory(null);
+        setEditCategoryName('');
+        setEditCategoryDescription('');
+    };
+
+    const handleUpdateCategory = async (e) => {
+        e.preventDefault();
+        
+        if (!editCategoryName.trim()) {
+            setError('Category name is required');
+            return;
+        }
+        
+        try {
+            setLoading(true);
+            await updateCategory(editingCategory.id, editCategoryName.trim(), editCategoryDescription.trim());
+            setEditingCategory(null);
+            await loadCategories();
+            setError('');
+        } catch (err) {
+            setError('Failed to update category: ' + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (loading && categories.length === 0) {
         return (
             <div className={styles.forumsContainer}>
@@ -150,6 +187,50 @@ export const Forums = () => {
             </div>
             
             {error && <div className={styles.errorMessage}>{error}</div>}
+
+            {editingCategory && (
+                <div className={styles.formContainer}>
+                    <h3>Edit Category</h3>
+                    <form onSubmit={handleUpdateCategory}>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="editCategoryName">Category Name</label>
+                            <input
+                                type="text"
+                                id="editCategoryName"
+                                value={editCategoryName}
+                                onChange={(e) => setEditCategoryName(e.target.value)}
+                                required
+                            />
+                        </div>
+                        
+                        <div className={styles.formGroup}>
+                            <label htmlFor="editCategoryDescription">Description (optional)</label>
+                            <textarea
+                                id="editCategoryDescription"
+                                value={editCategoryDescription}
+                                onChange={(e) => setEditCategoryDescription(e.target.value)}
+                                rows="3"
+                            />
+                        </div>
+                        
+                        <div className={styles.formActions}>
+                            <button 
+                                type="button" 
+                                className={`${styles.formButton} ${styles.cancelButton}`}
+                                onClick={handleCancelEdit}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="submit" 
+                                className={styles.formButton}
+                            >
+                                Update Category
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
             
             <div className={styles.categoriesList}>
                 {categories.length === 0 ? (
@@ -181,6 +262,13 @@ export const Forums = () => {
                                                     title="Move Down"
                                                 >
                                                     ↓
+                                                </button>
+                                                <button 
+                                                    className={`${styles.orderButton} ${styles.editButton}`}
+                                                    onClick={() => handleEditCategory(category)}
+                                                    title="Edit Category"
+                                                >
+                                                    ✎
                                                 </button>
                                                 <button 
                                                     className={`${styles.orderButton} ${styles.deleteButton}`}
