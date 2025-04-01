@@ -1,0 +1,155 @@
+.settingsContainer {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  color: #f0f0f0;
+}
+
+.header {
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #333;
+}
+
+.header h1 {
+  color: #A16BB9;
+  margin: 0;
+  font-size: 24px;
+}
+
+.settingsSection {
+  background-color: #1e1e24;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sectionHeader {
+  background-color: #232329;
+  padding: 15px;
+  border-bottom: 1px solid #333;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.sectionContent {
+  padding: 20px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="email"],
+.formGroup input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #2d2d39;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.formGroup input:focus {
+  border-color: #A16BB9;
+  outline: none;
+}
+
+.profilePicSection {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.profilePicContainer {
+  width: 120px;
+  height: 120px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  background-color: #181818;
+}
+
+.profilePic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profilePicButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.actionButton {
+  background-color: #2d2d39;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #3a3a48;
+}
+
+.primaryButton {
+  background-color: #A16BB9;
+  border-color: #A16BB9;
+}
+
+.primaryButton:hover {
+  background-color: #8a5ba0;
+}
+
+.dangerButton {
+  background-color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.dangerButton:hover {
+  background-color: #b71c1c;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.message {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.errorMessage {
+  background-color: rgba(211, 47, 47, 0.1);
+  border: 1px solid #d32f2f;
+  color: #f44336;
+}
+
+.successMessage {
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid #4caf50;
+  color: #81c784;
+}
