@@ -173,11 +173,10 @@ export async function isUserAdmin(userId) {
     if (!userId) {
       return false;
     }
+
+    const uid = typeof userId === 'object' && userId.uid ? userId.uid : userId;
     
-    const usersRef = collection(db, 'users');
-    const usersSnap = await getDocs(usersRef);
-    
-    const userRef = doc(db, 'users', userId);
+    const userRef = doc(db, 'users', uid);
     const userSnap = await getDoc(userRef);
     
     if (userSnap.exists()) {
@@ -185,8 +184,6 @@ export async function isUserAdmin(userId) {
       
       if (userData.hasOwnProperty('role')) {
         return userData.role === 'admin';
-      } else {
-        return false;
       }
     }
     return false;
@@ -202,7 +199,9 @@ export async function isUserModerator(userId) {
       return false;
     }
     
-    const userRef = doc(db, 'users', userId);
+    const uid = typeof userId === 'object' && userId.uid ? userId.uid : userId;
+    
+    const userRef = doc(db, 'users', uid);
     const userSnap = await getDoc(userRef);
     
     if (userSnap.exists()) {
@@ -346,9 +345,33 @@ export async function deleteCategory(categoryId) {
   }
 }
 
-export async function updateThread(threadId, title, content) {
+export async function updateThread(threadId, title, content, userId) {
   try {
+    // Add permission validation
+    if (!userId) {
+      throw new Error("User ID is required to update a thread");
+    }
+    
+    // Get thread to check ownership
     const threadRef = doc(db, 'threads', threadId);
+    const threadSnap = await getDoc(threadRef);
+    
+    if (!threadSnap.exists()) {
+      throw new Error("Thread not found");
+    }
+    
+    const threadData = threadSnap.data();
+    
+    // Check if user is creator, admin, or moderator
+    const isCreator = threadData.createdBy === userId;
+    const isAdmin = await isUserAdmin(userId);
+    const isModerator = await isUserModerator(userId);
+    
+    if (!isCreator && !isAdmin && !isModerator) {
+      throw new Error("Permission denied: You can only edit your own threads");
+    }
+    
+    // If permission check passes, update the thread
     await updateDoc(threadRef, {
       title: title,
       updatedAt: serverTimestamp()
@@ -379,8 +402,12 @@ export async function updateThread(threadId, title, content) {
   }
 }
 
-export async function deleteThread(threadId) {
+export async function deleteThread(threadId, userId) {
   try {
+    if (!userId) {
+      throw new Error("User ID is required to delete a thread");
+    }
+    
     const threadRef = doc(db, 'threads', threadId);
     const threadSnap = await getDoc(threadRef);
     
@@ -390,6 +417,14 @@ export async function deleteThread(threadId) {
     
     const threadData = threadSnap.data();
     const categoryId = threadData.categoryId;
+    
+    const isCreator = threadData.createdBy === userId;
+    const isAdmin = await isUserAdmin(userId);
+    const isModerator = await isUserModerator(userId);
+    
+    if (!isCreator && !isAdmin && !isModerator) {
+      throw new Error("Permission denied: You can only delete your own threads");
+    }
     
     const postsRef = collection(db, 'posts');
     const q = query(postsRef, where('threadId', '==', threadId));

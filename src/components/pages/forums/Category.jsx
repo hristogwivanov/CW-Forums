@@ -20,6 +20,8 @@ export const Category = () => {
     const [selectedThread, setSelectedThread] = useState(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [threadToDelete, setThreadToDelete] = useState(null);
+    const [isAdminUser, setIsAdminUser] = useState(false);
+    const [isModeratorUser, setIsModeratorUser] = useState(false);
     
     const { categoryId } = useParams();
     const { currentUser, isAuthenticated } = useAuth();
@@ -52,6 +54,35 @@ export const Category = () => {
         
         loadCategoryAndThreads();
     }, [categoryId]);
+    
+    useEffect(() => {
+        const checkUserRoles = async () => {
+            if (currentUser) {
+                try {
+                    const adminResult = await isUserAdmin(currentUser);
+                    const modResult = await isUserModerator(currentUser);
+                    
+                    console.log("User role check:", {
+                        userId: currentUser.uid,
+                        isAdmin: adminResult,
+                        isModerator: modResult
+                    });
+                    
+                    setIsAdminUser(adminResult);
+                    setIsModeratorUser(modResult);
+                } catch (error) {
+                    console.error("Error checking user roles:", error);
+                    setIsAdminUser(false);
+                    setIsModeratorUser(false);
+                }
+            } else {
+                setIsAdminUser(false);
+                setIsModeratorUser(false);
+            }
+        };
+        
+        checkUserRoles();
+    }, [currentUser]);
     
     const handleCreateThread = () => {
         if (!isAuthenticated) {
@@ -93,7 +124,8 @@ export const Category = () => {
                 await updateThread(
                     selectedThread.id,
                     newThreadTitle,
-                    newThreadContent
+                    newThreadContent,
+                    currentUser.uid
                 );
             }
             
@@ -112,6 +144,11 @@ export const Category = () => {
     };
     
     const handleEditThread = async (thread) => {
+        if (!currentUser || (!isAdminUser && !isModeratorUser && thread.createdBy !== currentUser.uid)) {
+            setError('You do not have permission to edit this thread');
+            return;
+        }
+        
         setModalMode('edit');
         setSelectedThread(thread);
         setNewThreadTitle(thread.title);
@@ -130,21 +167,31 @@ export const Category = () => {
         }
     };
     
-    const handleDeleteThread = async (threadId) => {
-        setThreadToDelete(threadId);
+    const handleDeleteThread = async (thread) => {
+        if (!currentUser || (!isAdminUser && !isModeratorUser && thread.createdBy !== currentUser.uid)) {
+            setError('You do not have permission to delete this thread');
+            return;
+        }
+        
+        setThreadToDelete(thread.id);
         setShowDeleteConfirm(true);
     };
     
     const confirmDeleteThread = async () => {
         try {
-            await deleteThread(threadToDelete);
+            await deleteThread(threadToDelete, currentUser.uid);
             const threadsData = await getThreadsByCategory(categoryId);
             setThreads(threadsData);
             setShowDeleteConfirm(false);
             setThreadToDelete(null);
         } catch (error) {
             console.error('Error deleting thread:', error);
-            setError('Failed to delete thread');
+            
+            if (error.message && error.message.includes("Permission denied")) {
+                setError(error.message);
+            } else {
+                setError(`Failed to delete thread: ${error.message || 'Unknown error'}`);
+            }
         }
     };
     
@@ -154,7 +201,26 @@ export const Category = () => {
     };
     
     const canManageThread = (thread) => {
-        return isUserAdmin(currentUser) || isUserModerator(currentUser) || thread.createdBy === currentUser.uid;
+        if (!currentUser) {
+            console.log("No current user, denying permissions");
+            return false;
+        }
+        
+        const isAdmin = isAdminUser;
+        const isMod = isModeratorUser;
+        const isCreator = thread.createdBy === currentUser.uid;
+        
+        console.log("Permission check:", {
+            threadId: thread.id,
+            threadCreator: thread.createdBy,
+            currentUserId: currentUser.uid,
+            isAdmin,
+            isMod,
+            isCreator,
+            hasPermission: isAdmin || isMod || isCreator
+        });
+        
+        return isAdmin || isMod || isCreator;
     };
     
     const formatDate = (timestamp) => {
@@ -211,12 +277,14 @@ export const Category = () => {
                     <p className={styles.categoryDescription}>{category.description}</p>
                 </div>
                 <div className={styles.categoryActions}>
-                    <button 
-                        className={styles.createThreadBtn}
-                        onClick={handleCreateThread}
-                    >
-                        Create New Thread
-                    </button>
+                    {isAuthenticated && (
+                        <button 
+                            className={styles.createThreadBtn}
+                            onClick={handleCreateThread}
+                        >
+                            Create New Thread
+                        </button>
+                    )}
                     <Link to="/forums" className={styles.backButton}>
                         Back to Forums
                     </Link>
@@ -339,7 +407,7 @@ export const Category = () => {
                                 )}
                             </div>
                             <div className={styles.threadActions}>
-                                {canManageThread(thread) && (
+                                {currentUser && (isAdminUser || isModeratorUser || thread.createdBy === currentUser.uid) ? (
                                     <>
                                         <button 
                                             className={`${styles.orderButton} ${styles.editButton}`}
@@ -350,12 +418,14 @@ export const Category = () => {
                                         </button>
                                         <button 
                                             className={`${styles.orderButton} ${styles.deleteButton}`}
-                                            onClick={() => handleDeleteThread(thread.id)}
+                                            onClick={() => handleDeleteThread(thread)}
                                             title="Delete Thread"
                                         >
                                             ✕
                                         </button>
                                     </>
+                                ) : (
+                                    <span></span> 
                                 )}
                             </div>
                         </div>
