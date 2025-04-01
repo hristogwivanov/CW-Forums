@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
-import { getThreadsByCategory, getCategoryById, createThread, updateThread, deleteThread, isUserAdmin, isUserModerator } from '../../../services/forumService';
+import { getThreadsByCategory, getCategoryById, createThread, updateThread, deleteThread, isUserAdmin, isUserModerator, getThreadWithPosts } from '../../../services/forumService';
 import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../../../../firebase.js';
 import styles from './category.module.css';
@@ -111,12 +111,23 @@ export const Category = () => {
         }
     };
     
-    const handleEditThread = (thread) => {
+    const handleEditThread = async (thread) => {
         setModalMode('edit');
         setSelectedThread(thread);
         setNewThreadTitle(thread.title);
-        setNewThreadContent(thread.content);
-        setModalOpen(true);
+        
+        try {
+            const { thread: threadData, posts } = await getThreadWithPosts(thread.id);
+            if (posts && posts.length > 0) {
+                setNewThreadContent(posts[0].content);
+            } else {
+                setNewThreadContent('');
+            }
+            setModalOpen(true);
+        } catch (error) {
+            console.error('Error fetching thread content:', error);
+            setError('Failed to load thread content for editing');
+        }
     };
     
     const handleDeleteThread = async (threadId) => {
