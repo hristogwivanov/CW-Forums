@@ -22,15 +22,12 @@ export const Thread = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newPostContent, setNewPostContent] = useState('');
-  const [editThreadModal, setEditThreadModal] = useState(false);
+  const [editingThread, setEditingThread] = useState(false);
   const [newThreadTitle, setNewThreadTitle] = useState('');
-  const [editingFirstPost, setEditingFirstPost] = useState(false);
-  const [editedFirstPostContent, setEditedFirstPostContent] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [isModeratorUser, setIsModeratorUser] = useState(false);
-  const [editPostModal, setEditPostModal] = useState(false);
-  const [currentEditingPost, setCurrentEditingPost] = useState(null);
+  const [editingPostId, setEditingPostId] = useState(null);
   const [editedPostContent, setEditedPostContent] = useState('');
   const [showDeletePostConfirm, setShowDeletePostConfirm] = useState(false);
   const [currentDeletingPost, setCurrentDeletingPost] = useState(null);
@@ -140,16 +137,14 @@ export const Thread = () => {
     setNewThreadTitle(thread.title);
     
     if (posts.length > 0) {
-      setEditedFirstPostContent(posts[0].content);
+      setEditedPostContent(posts[0].content);
+      setEditingPostId(posts[0].id);
     }
     
-    setEditThreadModal(true);
-    setEditingFirstPost(true);
+    setEditingThread(true);
   };
 
-  const handleUpdateThread = async (e) => {
-    e.preventDefault();
-    
+  const handleSaveThread = async () => {
     if (!newThreadTitle.trim()) {
       setError('Thread title cannot be empty');
       return;
@@ -161,7 +156,7 @@ export const Thread = () => {
       await updateThread(
         threadId,
         newThreadTitle,
-        editedFirstPostContent,
+        editedPostContent,
         currentUser.uid
       );
       
@@ -169,8 +164,8 @@ export const Thread = () => {
       setThread(updatedThread);
       setPosts(updatedPosts);
       
-      setEditThreadModal(false);
-      setEditingFirstPost(false);
+      setEditingThread(false);
+      setEditingPostId(null);
       setError('');
     } catch (err) {
       console.error('Error updating thread:', err);
@@ -178,6 +173,11 @@ export const Thread = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancelEditThread = () => {
+    setEditingThread(false);
+    setEditingPostId(null);
   };
 
   const handleDeleteThread = () => {
@@ -226,14 +226,11 @@ export const Thread = () => {
       return;
     }
     
-    setCurrentEditingPost(post);
+    setEditingPostId(post.id);
     setEditedPostContent(post.content);
-    setEditPostModal(true);
   };
 
-  const handleUpdatePost = async (e) => {
-    e.preventDefault();
-    
+  const handleSavePost = async (postId) => {
     if (!editedPostContent.trim()) {
       setError('Post content cannot be empty');
       return;
@@ -243,7 +240,7 @@ export const Thread = () => {
       setLoading(true);
       
       await updatePost(
-        currentEditingPost.id,
+        postId,
         editedPostContent,
         currentUser.uid
       );
@@ -251,8 +248,7 @@ export const Thread = () => {
       const { posts: updatedPosts } = await getThreadWithPosts(threadId);
       setPosts(updatedPosts);
       
-      setEditPostModal(false);
-      setCurrentEditingPost(null);
+      setEditingPostId(null);
       setEditedPostContent('');
       setError('');
     } catch (err) {
@@ -265,6 +261,11 @@ export const Thread = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancelEditPost = () => {
+    setEditingPostId(null);
+    setEditedPostContent('');
   };
 
   const handleDeletePost = (post) => {
@@ -361,24 +362,53 @@ export const Thread = () => {
       </div>
 
       <div className={styles.threadHeader}>
-        <h1>{thread?.title}</h1>
+        {editingThread ? (
+          <input
+            type="text"
+            value={newThreadTitle}
+            onChange={(e) => setNewThreadTitle(e.target.value)}
+            className={styles.threadTitleEdit}
+          />
+        ) : (
+          <h1>{thread?.title}</h1>
+        )}
         
         {currentUser && (isAdminUser || isModeratorUser || thread?.createdBy === currentUser.uid) && (
           <div className={styles.threadActions}>
-            <button 
-              className={`${styles.actionButton} ${styles.editButton}`}
-              onClick={handleEditThread}
-              title="Edit Thread"
-            >
-              ✎ Edit
-            </button>
-            <button 
-              className={`${styles.actionButton} ${styles.deleteButton}`}
-              onClick={handleDeleteThread}
-              title="Delete Thread"
-            >
-              ✕ Delete
-            </button>
+            {editingThread ? (
+              <>
+                <button 
+                  className={`${styles.actionButton} ${styles.saveButton}`}
+                  onClick={handleSaveThread}
+                  disabled={loading}
+                >
+                  {loading ? 'Saving...' : 'Save'}
+                </button>
+                <button 
+                  className={`${styles.actionButton} ${styles.cancelButton}`}
+                  onClick={handleCancelEditThread}
+                >
+                  Cancel
+                </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  className={`${styles.actionButton} ${styles.editButton}`}
+                  onClick={handleEditThread}
+                  title="Edit Thread"
+                >
+                  ✎ Edit
+                </button>
+                <button 
+                  className={`${styles.actionButton} ${styles.deleteButton}`}
+                  onClick={handleDeleteThread}
+                  title="Delete Thread"
+                >
+                  ✕ Delete
+                </button>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -387,35 +417,96 @@ export const Thread = () => {
         {posts.map((post, index) => (
           <div key={post.id} className={styles.postItem} id={`post-${post.id}`}>
             <div className={styles.postHeader}>
-              <div className={styles.postAuthor}>
-                <strong>{post.createdByUsername}</strong>
-              </div>
               <div className={styles.postDate}>
                 {formatDate(post.createdAt)}
-                {post.isEdited && <span className={styles.editedBadge}> (edited {formatDate(post.editedAt)})</span>}
+              </div>
+              <div className={styles.postNumber}>
+                #{index + 1}
               </div>
             </div>
+            
             <div className={styles.postContent}>
-              {post.content}
-            </div>
-            {currentUser && (isAdminUser || isModeratorUser || post.createdBy === currentUser.uid) && index > 0 && (
-              <div className={styles.postActions}>
-                <button 
-                  className={`${styles.actionButton} ${styles.editButton}`}
-                  onClick={() => handleEditPost(post)}
-                  title="Edit Reply"
-                >
-                  ✎ Edit
-                </button>
-                <button 
-                  className={`${styles.actionButton} ${styles.deleteButton}`}
-                  onClick={() => handleDeletePost(post)}
-                  title="Delete Reply"
-                >
-                  ✕ Delete
-                </button>
+              <div className={styles.postUserSection}>
+                <div className={styles.postAuthorSection}>
+                  <div className={styles.postAuthor}>
+                    {post.createdByUsername}
+                  </div>
+                  <div className={styles.profilePicContainer}>
+                    <img 
+                      src={post.profilePic} 
+                      alt={`${post.createdByUsername}'s profile`} 
+                      className={styles.profilePic}
+                    />
+                  </div>
+                  <div className={styles.postCount}>
+                    Posts: {post.userPostCount}
+                  </div>
+                </div>
               </div>
-            )}
+              
+              <div className={styles.postContentSection}>
+                {editingPostId === post.id ? (
+                  <div className={styles.editPostInline}>
+                    <textarea
+                      value={editedPostContent}
+                      onChange={(e) => setEditedPostContent(e.target.value)}
+                      className={styles.editPostTextarea}
+                      required
+                    />
+                    {!editingThread && (
+                      <div className={styles.editPostActions}>
+                        <button 
+                          className={`${styles.actionButton} ${styles.saveButton}`}
+                          onClick={() => handleSavePost(post.id)}
+                          disabled={loading}
+                        >
+                          {loading ? 'Saving...' : 'Save'}
+                        </button>
+                        <button 
+                          className={`${styles.actionButton} ${styles.cancelButton}`}
+                          onClick={handleCancelEditPost}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <div className={styles.postContent}>
+                      {post.content}
+                    </div>
+                    
+                    {post.isEdited && (
+                      <div className={styles.editedInfo}>
+                        <span className={styles.editedBadge}>Last edited: {formatDate(post.editedAt)}</span>
+                      </div>
+                    )}
+                    
+                    {currentUser && (isAdminUser || isModeratorUser || post.createdBy === currentUser.uid) && !editingThread && (
+                      <div className={styles.postActions}>
+                        <button 
+                          className={`${styles.actionButton} ${styles.editButton}`}
+                          onClick={() => handleEditPost(post)}
+                          title="Edit Reply"
+                        >
+                          ✎ Edit
+                        </button>
+                        {index > 0 && (
+                          <button 
+                            className={`${styles.actionButton} ${styles.deleteButton}`}
+                            onClick={() => handleDeletePost(post)}
+                            title="Delete Reply"
+                          >
+                            ✕ Delete
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -448,88 +539,6 @@ export const Thread = () => {
             Login
           </Link>
         </div>
-      )}
-
-      {editThreadModal && (
-        <Modal
-          isOpen={editThreadModal}
-          onClose={() => setEditThreadModal(false)}
-          title="Edit Thread"
-        >
-          <form onSubmit={handleUpdateThread} className={styles.editThreadForm}>
-            <div className={styles.formGroup}>
-              <label htmlFor="threadTitle">Thread Title:</label>
-              <input
-                type="text"
-                id="threadTitle"
-                value={newThreadTitle}
-                onChange={(e) => setNewThreadTitle(e.target.value)}
-                className={styles.formInput}
-                required
-              />
-            </div>
-            
-            {editingFirstPost && (
-              <div className={styles.formGroup}>
-                <label htmlFor="firstPostContent">First Post Content:</label>
-                <textarea
-                  id="firstPostContent"
-                  value={editedFirstPostContent}
-                  onChange={(e) => setEditedFirstPostContent(e.target.value)}
-                  className={styles.formTextarea}
-                  required
-                />
-              </div>
-            )}
-            
-            <div className={styles.formActions}>
-              <button type="submit" className={styles.submitButton} disabled={loading}>
-                {loading ? 'Saving...' : 'Save Changes'}
-              </button>
-              <button 
-                type="button" 
-                className={styles.cancelButton}
-                onClick={() => setEditThreadModal(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </Modal>
-      )}
-
-      {editPostModal && (
-        <Modal
-          isOpen={editPostModal}
-          onClose={() => setEditPostModal(false)}
-          title="Edit Reply"
-        >
-          <form onSubmit={handleUpdatePost} className={styles.editPostForm}>
-            <div className={styles.formGroup}>
-              <label htmlFor="postContent">Content:</label>
-              <textarea
-                id="postContent"
-                value={editedPostContent}
-                onChange={(e) => setEditedPostContent(e.target.value)}
-                className={styles.formTextarea}
-                required
-              />
-            </div>
-            
-            <div className={styles.formActions}>
-              <button type="submit" className={styles.submitButton} disabled={loading}>
-                {loading ? 'Saving...' : 'Save Changes'}
-              </button>
-              <button 
-                type="button" 
-                className={styles.cancelButton}
-                onClick={() => setEditPostModal(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </Modal>
       )}
 
       {showDeleteConfirm && (

@@ -35,7 +35,20 @@
 .threadHeader h1 {
   margin: 0;
   font-size: 24px;
-  color: #fff;
+  color: #A16BB9;
+}
+
+.threadTitleEdit {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
+  width: 100%;
+  max-width: 700px;
+  padding: 8px 12px;
+  background-color: #2d2d39;
+  color: white;
+  border: 1px solid #A16BB9;
+  border-radius: 4px;
 }
 
 .threadActions {
@@ -74,38 +87,122 @@
 }
 
 .postItem {
+  margin-bottom: 20px;
   background-color: #1e1e24;
   border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .postHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
+  padding: 8px 15px;
+  background-color: #232329;
   border-bottom: 1px solid #333;
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  align-items: center;
 }
 
-.postAuthor {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.postDate {
+  font-size: 13px;
+  color: #888;
+}
+
+.postNumber {
+  font-size: 13px;
+  color: #A16BB9;
+  font-weight: bold;
 }
 
 .postContent {
-  line-height: 1.6;
+  display: flex;
+  flex-direction: row;
+}
+
+.postUserSection {
+  padding: 15px;
+  width: 200px;
+  background-color: #232329;
+  border-right: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.postContentSection {
+  flex: 1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Ensures proper text wrapping in flex items */
+}
+
+.postAuthorSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.postAuthor {
+  font-weight: bold;
+  color: #fff;
+  word-break: break-word;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.profilePicContainer {
+  width: 120px;
+  height: 120px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: none;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  background-color: #181818;
+  margin-bottom: 10px;
+}
+
+.profilePic {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.postCount {
+  font-size: 12px;
+  color: #a0a0a0;
+  margin-top: 2px;
+}
+
+.postContent {
+  color: #f0f0f0;
+  line-height: 1.5;
   white-space: pre-wrap;
-  margin-bottom: 15px;
+  word-break: break-word;
+  min-height: 80px; /* Ensures even short posts have some height */
+  flex-grow: 1;
 }
 
 .postActions {
   display: flex;
-  gap: 10px;
   justify-content: flex-end;
-  border-top: 1px solid #333;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.editedInfo {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
   padding-top: 10px;
 }
 
@@ -113,6 +210,35 @@
   font-size: 12px;
   color: #888;
   font-style: italic;
+}
+
+.editPostInline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.editPostTextarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 12px;
+  background-color: #2d2d39;
+  color: white;
+  border: 1px solid #A16BB9;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.editPostActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.saveButton {
+  background-color: #22c55e;
+  color: white;
 }
 
 .replyForm {

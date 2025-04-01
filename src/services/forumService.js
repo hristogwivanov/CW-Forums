@@ -92,10 +92,20 @@ export async function getThreadWithPosts(threadId) {
     );
     const postsSnap = await getDocs(q);
     
-    const posts = postsSnap.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    const postsPromises = postsSnap.docs.map(async doc => {
+      const postData = doc.data();
+      const userProfilePic = await getUserProfilePic(postData.createdBy);
+      const userPostCount = await getUserPostCount(postData.createdBy);
+      
+      return {
+        id: doc.id,
+        ...postData,
+        profilePic: userProfilePic,
+        userPostCount: userPostCount
+      };
+    });
+    
+    const posts = await Promise.all(postsPromises);
     
     return { thread, posts };
   } catch (error) {
@@ -519,5 +529,35 @@ export async function deletePost(postId, threadId, userId) {
   } catch (error) {
     console.error("Error deleting post:", error);
     throw error;
+  }
+}
+
+export async function getUserProfilePic(userId) {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const userSnap = await getDoc(userRef);
+    
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      return userData.profilePic || 'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg';
+    }
+    
+    return 'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg';
+  } catch (error) {
+    console.error("Error getting user profile pic:", error);
+    return 'https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg';
+  }
+}
+
+export async function getUserPostCount(userId) {
+  try {
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef, where('createdBy', '==', userId));
+    const querySnapshot = await getDocs(q);
+    
+    return querySnapshot.size;
+  } catch (error) {
+    console.error("Error getting user post count:", error);
+    return 0;
   }
 }
