@@ -60,6 +60,9 @@ export const Category = () => {
         }
         
         setModalMode('create');
+        setNewThreadTitle('');
+        setNewThreadContent('');
+        setSelectedThread(null);
         setModalOpen(true);
     };
     
