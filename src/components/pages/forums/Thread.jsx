@@ -8,7 +8,9 @@ import {
   isUserModerator,
   deleteThread,
   getCategoryById,
-  updateThread
+  updateThread,
+  updatePost,
+  deletePost
 } from '../../../services/forumService';
 import styles from './thread.module.css';
 import Modal from '../../../components/organisms/modals/Modal';
@@ -27,6 +29,11 @@ export const Thread = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isAdminUser, setIsAdminUser] = useState(false);
   const [isModeratorUser, setIsModeratorUser] = useState(false);
+  const [editPostModal, setEditPostModal] = useState(false);
+  const [currentEditingPost, setCurrentEditingPost] = useState(null);
+  const [editedPostContent, setEditedPostContent] = useState('');
+  const [showDeletePostConfirm, setShowDeletePostConfirm] = useState(false);
+  const [currentDeletingPost, setCurrentDeletingPost] = useState(null);
 
   const { threadId } = useParams();
   const { currentUser, isAuthenticated } = useAuth();
@@ -208,6 +215,107 @@ export const Thread = () => {
     setShowDeleteConfirm(false);
   };
 
+  const handleEditPost = (post) => {
+    if (!currentUser) {
+      setError('You must be logged in to edit posts');
+      return;
+    }
+    
+    if (!isAdminUser && !isModeratorUser && post.createdBy !== currentUser.uid) {
+      setError('You do not have permission to edit this post');
+      return;
+    }
+    
+    setCurrentEditingPost(post);
+    setEditedPostContent(post.content);
+    setEditPostModal(true);
+  };
+
+  const handleUpdatePost = async (e) => {
+    e.preventDefault();
+    
+    if (!editedPostContent.trim()) {
+      setError('Post content cannot be empty');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      
+      await updatePost(
+        currentEditingPost.id,
+        editedPostContent,
+        currentUser.uid
+      );
+      
+      const { posts: updatedPosts } = await getThreadWithPosts(threadId);
+      setPosts(updatedPosts);
+      
+      setEditPostModal(false);
+      setCurrentEditingPost(null);
+      setEditedPostContent('');
+      setError('');
+    } catch (err) {
+      console.error('Error updating post:', err);
+      if (err.message && err.message.includes('Permission denied')) {
+        setError(err.message);
+      } else {
+        setError('Failed to update post');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePost = (post) => {
+    if (!currentUser) {
+      setError('You must be logged in to delete posts');
+      return;
+    }
+    
+    if (!isAdminUser && !isModeratorUser && post.createdBy !== currentUser.uid) {
+      setError('You do not have permission to delete this post');
+      return;
+    }
+    
+    setCurrentDeletingPost(post);
+    setShowDeletePostConfirm(true);
+  };
+
+  const confirmDeletePost = async () => {
+    try {
+      setLoading(true);
+      
+      await deletePost(
+        currentDeletingPost.id,
+        threadId,
+        currentUser.uid
+      );
+      
+      const { posts: updatedPosts } = await getThreadWithPosts(threadId);
+      setPosts(updatedPosts);
+      
+      setShowDeletePostConfirm(false);
+      setCurrentDeletingPost(null);
+      setError('');
+    } catch (err) {
+      console.error('Error deleting post:', err);
+      if (err.message && err.message.includes('Permission denied') || 
+          err.message.includes('Cannot delete the first post')) {
+        setError(err.message);
+      } else {
+        setError('Failed to delete post');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelDeletePost = () => {
+    setShowDeletePostConfirm(false);
+    setCurrentDeletingPost(null);
+  };
+
   const formatDate = (timestamp) => {
     if (!timestamp) return 'N/A';
     
@@ -281,15 +389,33 @@ export const Thread = () => {
             <div className={styles.postHeader}>
               <div className={styles.postAuthor}>
                 <strong>{post.createdByUsername}</strong>
-                {index === 0 && <span className={styles.authorBadge}>Author</span>}
               </div>
               <div className={styles.postDate}>
                 {formatDate(post.createdAt)}
+                {post.isEdited && <span className={styles.editedBadge}> (edited {formatDate(post.editedAt)})</span>}
               </div>
             </div>
             <div className={styles.postContent}>
               {post.content}
             </div>
+            {currentUser && (isAdminUser || isModeratorUser || post.createdBy === currentUser.uid) && index > 0 && (
+              <div className={styles.postActions}>
+                <button 
+                  className={`${styles.actionButton} ${styles.editButton}`}
+                  onClick={() => handleEditPost(post)}
+                  title="Edit Reply"
+                >
+                  ✎ Edit
+                </button>
+                <button 
+                  className={`${styles.actionButton} ${styles.deleteButton}`}
+                  onClick={() => handleDeletePost(post)}
+                  title="Delete Reply"
+                >
+                  ✕ Delete
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -372,6 +498,40 @@ export const Thread = () => {
         </Modal>
       )}
 
+      {editPostModal && (
+        <Modal
+          isOpen={editPostModal}
+          onClose={() => setEditPostModal(false)}
+          title="Edit Reply"
+        >
+          <form onSubmit={handleUpdatePost} className={styles.editPostForm}>
+            <div className={styles.formGroup}>
+              <label htmlFor="postContent">Content:</label>
+              <textarea
+                id="postContent"
+                value={editedPostContent}
+                onChange={(e) => setEditedPostContent(e.target.value)}
+                className={styles.formTextarea}
+                required
+              />
+            </div>
+            
+            <div className={styles.formActions}>
+              <button type="submit" className={styles.submitButton} disabled={loading}>
+                {loading ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button 
+                type="button" 
+                className={styles.cancelButton}
+                onClick={() => setEditPostModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
       {showDeleteConfirm && (
         <Modal
           isOpen={showDeleteConfirm}
@@ -389,6 +549,32 @@ export const Thread = () => {
               </button>
               <button 
                 onClick={cancelDeleteThread}
+                className={styles.cancelButton}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {showDeletePostConfirm && (
+        <Modal
+          isOpen={showDeletePostConfirm}
+          onClose={cancelDeletePost}
+          title="Confirm Delete"
+        >
+          <div className={styles.confirmDelete}>
+            <p>Are you sure you want to delete this reply? This action cannot be undone.</p>
+            <div className={styles.confirmActions}>
+              <button 
+                onClick={confirmDeletePost}
+                className={styles.deleteButton}
+              >
+                Delete Reply
+              </button>
+              <button 
+                onClick={cancelDeletePost}
                 className={styles.cancelButton}
               >
                 Cancel

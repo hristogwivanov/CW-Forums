@@ -347,12 +347,10 @@ export async function deleteCategory(categoryId) {
 
 export async function updateThread(threadId, title, content, userId) {
   try {
-    // Add permission validation
     if (!userId) {
       throw new Error("User ID is required to update a thread");
     }
     
-    // Get thread to check ownership
     const threadRef = doc(db, 'threads', threadId);
     const threadSnap = await getDoc(threadRef);
     
@@ -362,7 +360,6 @@ export async function updateThread(threadId, title, content, userId) {
     
     const threadData = threadSnap.data();
     
-    // Check if user is creator, admin, or moderator
     const isCreator = threadData.createdBy === userId;
     const isAdmin = await isUserAdmin(userId);
     const isModerator = await isUserModerator(userId);
@@ -371,7 +368,6 @@ export async function updateThread(threadId, title, content, userId) {
       throw new Error("Permission denied: You can only edit your own threads");
     }
     
-    // If permission check passes, update the thread
     await updateDoc(threadRef, {
       title: title,
       updatedAt: serverTimestamp()
@@ -446,6 +442,82 @@ export async function deleteThread(threadId, userId) {
     return true;
   } catch (error) {
     console.error("Error deleting thread:", error);
+    throw error;
+  }
+}
+
+export async function updatePost(postId, content, userId) {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postSnap = await getDoc(postRef);
+    
+    if (!postSnap.exists()) {
+      throw new Error('Post not found');
+    }
+    
+    const postData = postSnap.data();
+    
+    const isAdmin = await isUserAdmin(userId);
+    const isModerator = await isUserModerator(userId);
+    
+    if (!isAdmin && !isModerator && postData.createdBy !== userId) {
+      throw new Error('Permission denied: You do not have permission to edit this post');
+    }
+    
+    await updateDoc(postRef, {
+      content,
+      editedAt: serverTimestamp(),
+      isEdited: true
+    });
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating post:", error);
+    throw error;
+  }
+}
+
+export async function deletePost(postId, threadId, userId) {
+  try {
+    const postRef = doc(db, 'posts', postId);
+    const postSnap = await getDoc(postRef);
+    
+    if (!postSnap.exists()) {
+      throw new Error('Post not found');
+    }
+    
+    const postData = postSnap.data();
+    
+    const isAdmin = await isUserAdmin(userId);
+    const isModerator = await isUserModerator(userId);
+    
+    if (!isAdmin && !isModerator && postData.createdBy !== userId) {
+      throw new Error('Permission denied: You do not have permission to delete this post');
+    }
+    
+    const postsRef = collection(db, 'posts');
+    const q = query(
+      postsRef, 
+      where('threadId', '==', threadId),
+      orderBy('createdAt', 'asc'),
+      limit(1)
+    );
+    const firstPostSnap = await getDocs(q);
+    
+    if (!firstPostSnap.empty && firstPostSnap.docs[0].id === postId) {
+      throw new Error('Cannot delete the first post of a thread. Delete the entire thread instead.');
+    }
+    
+    await deleteDoc(postRef);
+    
+    const threadRef = doc(db, 'threads', threadId);
+    await updateDoc(threadRef, {
+      postCount: increment(-1)
+    });
+    
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting post:", error);
     throw error;
   }
 }

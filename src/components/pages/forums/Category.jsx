@@ -377,7 +377,6 @@ export const Category = () => {
                         <div className={styles.threadAuthor}>Author</div>
                         <div className={styles.threadReplies}>Replies</div>
                         <div className={styles.threadLastPost}>Last Post</div>
-                        <div className={styles.threadActions}>Actions</div>
                     </div>
                     
                     {threads.map(thread => (
@@ -404,28 +403,6 @@ export const Category = () => {
                                     <span className={styles.threadDate}>
                                         {formatDate(thread.createdAt)}
                                     </span>
-                                )}
-                            </div>
-                            <div className={styles.threadActions}>
-                                {currentUser && (isAdminUser || isModeratorUser || thread.createdBy === currentUser.uid) ? (
-                                    <>
-                                        <button 
-                                            className={`${styles.orderButton} ${styles.editButton}`}
-                                            onClick={() => handleEditThread(thread)}
-                                            title="Edit Thread"
-                                        >
-                                            ✎
-                                        </button>
-                                        <button 
-                                            className={`${styles.orderButton} ${styles.deleteButton}`}
-                                            onClick={() => handleDeleteThread(thread)}
-                                            title="Delete Thread"
-                                        >
-                                            ✕
-                                        </button>
-                                    </>
-                                ) : (
-                                    <span></span> 
                                 )}
                             </div>
                         </div>

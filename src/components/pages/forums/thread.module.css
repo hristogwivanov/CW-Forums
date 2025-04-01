@@ -95,18 +95,24 @@
   gap: 8px;
 }
 
-.authorBadge {
-  background-color: #A16BB9;
-  color: white;
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: bold;
-}
-
 .postContent {
   line-height: 1.6;
   white-space: pre-wrap;
+  margin-bottom: 15px;
+}
+
+.postActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  border-top: 1px solid #333;
+  padding-top: 10px;
+}
+
+.editedBadge {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
 }
 
 .replyForm {
@@ -242,4 +248,14 @@
   text-align: center;
   font-size: 16px;
   margin-bottom: 20px;
+}
+
+.editPostForm .formGroup {
+  margin-bottom: 20px;
+}
+
+.editPostForm label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
 }

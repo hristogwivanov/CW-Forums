@@ -76,7 +76,7 @@
   
   .threadsHeader {
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr 1.5fr 0.5fr;
+    grid-template-columns: 3fr 1fr 0.8fr 1.2fr;
     padding: 16px 20px;
     background-color: #f8f9fa;
     border-bottom: 1px solid #eee;
@@ -91,7 +91,7 @@
   
   .threadItem {
     display: grid;
-    grid-template-columns: 3fr 1fr 1fr 1.5fr 0.5fr;
+    grid-template-columns: 3fr 1fr 0.8fr 1.2fr;
     padding: 16px 20px;
     border-bottom: 1px solid #f0f0f0;
     transition: background-color 0.2s;
