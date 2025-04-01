@@ -18,6 +18,8 @@ export const Category = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState('create');
     const [selectedThread, setSelectedThread] = useState(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [threadToDelete, setThreadToDelete] = useState(null);
     
     const { categoryId } = useParams();
     const { currentUser, isAuthenticated } = useAuth();
@@ -115,14 +117,26 @@ export const Category = () => {
     };
     
     const handleDeleteThread = async (threadId) => {
+        setThreadToDelete(threadId);
+        setShowDeleteConfirm(true);
+    };
+    
+    const confirmDeleteThread = async () => {
         try {
-            await deleteThread(threadId);
+            await deleteThread(threadToDelete);
             const threadsData = await getThreadsByCategory(categoryId);
             setThreads(threadsData);
+            setShowDeleteConfirm(false);
+            setThreadToDelete(null);
         } catch (error) {
             console.error('Error deleting thread:', error);
             setError('Failed to delete thread');
         }
+    };
+    
+    const cancelDeleteThread = () => {
+        setShowDeleteConfirm(false);
+        setThreadToDelete(null);
     };
     
     const canManageThread = (thread) => {
@@ -241,6 +255,32 @@ export const Category = () => {
                         </button>
                     </div>
                 </form>
+            </Modal>
+            
+            <Modal
+                isOpen={showDeleteConfirm}
+                onClose={cancelDeleteThread}
+                title="Confirm Deletion"
+            >
+                <div className={styles.confirmDeleteContent}>
+                    <p>Are you sure you want to delete this thread? This action cannot be undone.</p>
+                    <div className={styles.formActions}>
+                        <button 
+                            type="button" 
+                            className={`${styles.formButton} ${styles.cancelButton}`}
+                            onClick={cancelDeleteThread}
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="button" 
+                            className={`${styles.formButton} ${styles.deleteButton}`}
+                            onClick={confirmDeleteThread}
+                        >
+                            Delete Thread
+                        </button>
+                    </div>
+                </div>
             </Modal>
             
             {threads.length === 0 ? (
