@@ -1,0 +1,245 @@
+.threadContainer {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.breadcrumbs {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.breadcrumbs a {
+  color: #A16BB9;
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.currentPage {
+  font-weight: bold;
+  color: #888;
+}
+
+.threadHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #333;
+}
+
+.threadHeader h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #fff;
+}
+
+.threadActions {
+  display: flex;
+  gap: 10px;
+}
+
+.actionButton {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.editButton {
+  background-color: #4a5568;
+  color: white;
+}
+
+.deleteButton {
+  background-color: #e53e3e;
+  color: white;
+}
+
+.actionButton:hover {
+  opacity: 0.9;
+}
+
+.postsList {
+  margin-bottom: 30px;
+}
+
+.postItem {
+  background-color: #1e1e24;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.postHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.postAuthor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.authorBadge {
+  background-color: #A16BB9;
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.postContent {
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.replyForm {
+  background-color: #1e1e24;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+.replyForm h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.replyTextarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 12px;
+  background-color: #2d2d39;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 4px;
+  resize: vertical;
+  margin-bottom: 15px;
+}
+
+.submitButton {
+  background-color: #A16BB9;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #8759a5;
+}
+
+.submitButton:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #e53e3e;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(229, 62, 62, 0.1);
+  border-radius: 4px;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #888;
+}
+
+.loginPrompt {
+  background-color: #1e1e24;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.loginButton {
+  display: inline-block;
+  background-color: #A16BB9;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loginButton:hover {
+  background-color: #8759a5;
+}
+
+.editThreadForm .formGroup {
+  margin-bottom: 20px;
+}
+
+.editThreadForm label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.formInput, .formTextarea {
+  width: 100%;
+  padding: 12px;
+  background-color: #2d2d39;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+.formTextarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  background-color: #4a5568;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.confirmActions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.confirmDelete p {
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 20px;
+}

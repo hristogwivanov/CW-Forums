@@ -383,7 +383,7 @@ export const Category = () => {
                     {threads.map(thread => (
                         <div key={thread.id} className={styles.threadItem}>
                             <div className={styles.threadTitle}>
-                                <Link to={`/forums/thread/${thread.id}`}>
+                                <Link to={`/thread/${thread.id}`}>
                                     {thread.title}
                                 </Link>
                                 {thread.isPinned && <span className={styles.pinnedThread}>Pinned</span>}

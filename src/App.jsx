@@ -11,6 +11,7 @@ import { Home } from './components/pages/home/Home'
 import { Login } from './components/pages/login/Login'
 import { Forums } from './components/pages/forums/Forums';
 import { Category } from './components/pages/forums/Category';
+import { Thread } from './components/pages/forums/Thread';
 import { Register } from './components/pages/register/Register'
 import { Profile } from './components/pages/profile/Profile';
 import { Settings } from './components/pages/settings/Settings';
@@ -28,6 +29,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forums" element={<Forums />} />
             <Route path="/categories/:categoryId" element={<Category />} />
+            <Route path="/thread/:threadId" element={<Thread />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
