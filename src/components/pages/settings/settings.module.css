@@ -105,35 +105,75 @@
   cursor: pointer;
   font-size: 14px;
   transition: all 0.2s;
+  margin-top: 5px;
 }
 
 .actionButton:hover {
   background-color: #3a3a48;
 }
 
-.primaryButton {
+.actionButton.primaryButton {
   background-color: #A16BB9;
   border-color: #A16BB9;
 }
 
-.primaryButton:hover {
+.actionButton.primaryButton:hover {
   background-color: #8a5ba0;
 }
 
-.dangerButton {
-  background-color: #d32f2f;
-  border-color: #d32f2f;
+.readOnlyInput {
+  background-color: rgba(128, 128, 128, 0.1);
+  cursor: default !important;
+  border: 1px solid #555;
+  color: #aaa;
 }
 
-.dangerButton:hover {
-  background-color: #b71c1c;
+.emailContainer {
+  margin-bottom: 20px;
 }
 
-.buttonGroup {
+.verificationContainer {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
   gap: 10px;
-  margin-top: 20px;
+}
+
+.verifiedEmail {
+  color: #1edd88;
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  margin-left: 10px;
+}
+
+.verifyEmailButton {
+  margin-top: 25px;
+  background-color: #2d2d39;
+  border-color: #333;
+}
+
+.verifyEmailButton:hover {
+  background-color: #3a3a48;
+}
+
+.verifyButton {
+  background-color: #8246af;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  margin-top: 15px;
+}
+
+.verifyButton:hover {
+  background-color: #9555c4;
+}
+
+.verifyButton:disabled {
+  background-color: #6a3a7c;
+  cursor: not-allowed;
 }
 
 .message {
@@ -190,4 +230,12 @@
 
 .dangerButton:hover {
   background-color: #b71c1c;
+}
+
+.successText {
+  color: #4caf50;
+  font-size: 13px;
+  margin-top: 20px;
+  font-weight: bold;
+  display: block;
 }

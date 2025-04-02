@@ -3,7 +3,17 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { useUser } from '../../../contexts/UserContext';
 import { doc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db, storage } from '../../../../firebase.js';
-import { updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from 'firebase/auth';
+import { 
+    updatePassword, 
+    updateEmail, 
+    EmailAuthProvider, 
+    reauthenticateWithCredential, 
+    deleteUser, 
+    sendEmailVerification,
+    verifyBeforeUpdateEmail,
+    getAuth,
+    signOut as firebaseSignOut
+} from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import styles from './settings.module.css';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +36,7 @@ export const Settings = () => {
     const [passwordChangeLoading, setPasswordChangeLoading] = useState(false);
     const [imageUploadLoading, setImageUploadLoading] = useState(false);
     const [deleteAccountLoading, setDeleteAccountLoading] = useState(false);
+    const [verificationLoading, setVerificationLoading] = useState(false);
     
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [deletePassword, setDeletePassword] = useState('');
@@ -55,6 +66,24 @@ export const Settings = () => {
         
         fetchUserData();
     }, [currentUser]);
+
+    useEffect(() => {
+        const checkEmailVerification = async () => {
+            if (currentUser) {
+                try {
+                    await currentUser.reload();
+                } catch (err) {
+                    console.error("Error reloading user:", err);
+                }
+            }
+        };
+        
+        checkEmailVerification();
+        
+        const intervalId = setInterval(checkEmailVerification, 10000);
+        
+        return () => clearInterval(intervalId);
+    }, [currentUser]);
     
     const handleProfileUpdate = async (e) => {
         e.preventDefault();
@@ -71,19 +100,68 @@ export const Settings = () => {
         try {
             if (username) {
                 await updateDisplayName(username);
+                setSuccess('Profile updated successfully!');
             }
-            
-            if (email !== currentUser.email) {
-                await updateEmail(currentUser, email);
-            }
-            
-            setSuccess('Profile updated successfully!');
         } catch (err) {
             console.error('Error updating profile:', err);
             setError('Failed to update profile: ' + err.message);
         } finally {
             setProfileUpdateLoading(false);
         }
+    };
+    
+    const sendVerificationEmail = async () => {
+        setVerificationLoading(true);
+        setError('');
+        
+        try {
+            await sendEmailVerification(currentUser);
+            setSuccess('Verification email sent! Please check your inbox.');
+            
+            startVerificationCheck();
+            
+        } catch (emailError) {
+            console.error('Error sending verification email:', emailError);
+            if (emailError.code === 'auth/too-many-requests') {
+                setError('Too many verification emails sent. Please try again later.');
+            } else {
+                setError(`Failed to send verification email: ${emailError.message}`);
+            }
+        } finally {
+            setVerificationLoading(false);
+        }
+    };
+    
+    const startVerificationCheck = () => {
+        const checkInterval = setInterval(async () => {
+            try {
+                const auth = getAuth();
+                const user = auth.currentUser;
+                
+                if (user) {
+                    await user.reload();
+                    
+                    if (user.emailVerified) {
+                        clearInterval(checkInterval);
+                        setSuccess('Email verified successfully!');
+                        
+
+                        setUserData(prevData => ({ 
+                            ...prevData,
+                            emailVerified: true 
+                        }));
+                    }
+                } else {
+                    clearInterval(checkInterval);
+                }
+            } catch (error) {
+                console.error('Error checking verification status:', error);
+            }
+        }, 3000); 
+        
+        setTimeout(() => {
+            clearInterval(checkInterval);
+        }, 120000);
     };
     
     const handlePasswordChange = async (e) => {
@@ -238,6 +316,16 @@ export const Settings = () => {
         setError('');
     };
     
+    const signOut = async () => {
+        try {
+            const auth = getAuth();
+            await firebaseSignOut(auth);
+            navigate('/login');
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
+    };
+    
     if (!userData) {
         return <div className={styles.settingsContainer}>Loading user data...</div>;
     }
@@ -305,9 +393,21 @@ export const Settings = () => {
                                 type="email"
                                 id="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
+                                readOnly={true}
+                                className={styles.readOnlyInput}
                             />
+                            {currentUser?.emailVerified ? (
+                                <p className={styles.successText}>Email verified!</p>
+                            ) : (
+                                <button 
+                                    type="button" 
+                                    className={`${styles.actionButton} ${styles.verifyEmailButton}`}
+                                    onClick={sendVerificationEmail}
+                                    disabled={verificationLoading}
+                                >
+                                    {verificationLoading ? 'Sending...' : 'Send Verification Email'}
+                                </button>
+                            )}
                         </div>
                         
                         <div className={styles.buttonGroup}>
