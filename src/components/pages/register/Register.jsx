@@ -13,7 +13,7 @@ export const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const { signup, authError, clearAuthError } = useAuth();
+    const { signup, clearAuthError } = useAuth();
     const { updateDisplayName } = useUser();
 
     const navigate = useNavigate();
