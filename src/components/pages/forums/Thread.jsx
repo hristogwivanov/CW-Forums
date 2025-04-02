@@ -32,6 +32,7 @@ export const Thread = () => {
   const [showDeletePostConfirm, setShowDeletePostConfirm] = useState(false);
   const [currentDeletingPost, setCurrentDeletingPost] = useState(null);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
+  const [deleteThreadLoading, setDeleteThreadLoading] = useState(false);
   const [isEditingPost, setIsEditingPost] = useState(false);
   const [currentEditingPost, setCurrentEditingPost] = useState(null);
 
@@ -186,6 +187,8 @@ export const Thread = () => {
 
   const confirmDeleteThread = async () => {
     try {
+      setDeleteThreadLoading(true);
+      
       await deleteThread(threadId, currentUser.uid);
       
       if (thread && thread.categoryId) {
@@ -203,6 +206,8 @@ export const Thread = () => {
       }
       
       setShowDeleteConfirm(false);
+    } finally {
+      setDeleteThreadLoading(false);
     }
   };
 
@@ -399,8 +404,9 @@ export const Thread = () => {
                   className={`${styles.actionButton} ${styles.deleteButton}`}
                   onClick={handleDeleteThread}
                   title="Delete Thread"
+                  disabled={deleteThreadLoading}
                 >
-                  ✕ Delete
+                  {deleteThreadLoading ? 'Deleting...' : '✕ Delete'}
                 </button>
               </>
             )}
@@ -553,12 +559,14 @@ export const Thread = () => {
               <button 
                 onClick={confirmDeleteThread}
                 className={styles.deleteButton}
+                disabled={deleteThreadLoading}
               >
-                Delete Thread
+                {deleteThreadLoading ? 'Deleting...' : 'Delete Thread'}
               </button>
               <button 
                 onClick={cancelDeleteThread}
                 className={styles.cancelButton}
+                disabled={deleteThreadLoading}
               >
                 Cancel
               </button>
