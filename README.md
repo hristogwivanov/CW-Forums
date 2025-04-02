@@ -51,6 +51,77 @@ CW-Forums offers comprehensive coverage of the cryptocurrency ecosystem through 
 - **Backend**: Firebase (Authentication, Firestore, Hosting)
 - **Styling**: CSS Modules for component-scoped styling
 
+## Project Architecture
+
+### Component Structure
+
+The application follows a modular component-based architecture:
+
+```
+src/
+├── components/
+│   ├── common/          # Reusable UI components
+│   ├── pages/           # Page-level components
+│   │   ├── forums/      # Forums, categories, and threads
+│   │   ├── login/       # Authentication pages
+│   │   ├── profile/     # User profile
+│   │   ├── register/    # User registration
+│   │   ├── settings/    # User settings
+│   │   └── notFound/    # 404 page
+├── contexts/            # React Context providers
+│   ├── AuthContext.jsx  # Authentication state
+│   └── UserContext.jsx  # User profile data
+├── guards/              # Route protection
+│   ├── AuthGuard.jsx    # Protected routes for authenticated users
+│   └── GuestGuard.jsx   # Routes available only to guests
+├── layout/              # Application layout components
+│   ├── header/          # Navigation header
+│   └── footer/          # Page footer
+└── services/            # API and data services
+    ├── authService.js   # Authentication operations
+    ├── forumService.js  # Forum data operations
+    └── userService.js   # User profile operations
+```
+
+### State Management
+
+The application uses React's Context API for global state management:
+
+- **AuthContext**: Manages authentication state using Firebase's onAuthStateChanged
+- **UserContext**: Provides user profile data and update functionality
+
+### Routing
+
+Client-side routing implemented with React Router:
+
+- **Public Routes**: 
+  - `/forums` - Main forum listing
+  - `/categories/:categoryId` - Threads within a category
+  - `/thread/:threadId` - Individual thread with posts
+  
+- **Protected Routes** (require authentication):
+  - `/profile` - Current user's profile
+  - `/profile/:userId` - View another user's profile
+  - `/settings` - User account settings
+  
+- **Guest-Only Routes** (unavailable when logged in):
+  - `/login` - User login page
+  - `/register` - New account registration
+
+### Authentication System
+
+- Firebase Authentication for user management
+- Email verification with real-time status updates
+- Smart logout functionality that preserves user context
+- Route guards to control access to protected pages
+
+### Data Flow
+
+1. **Services Layer**: Communicates with Firebase APIs
+2. **Context Providers**: Maintain application state
+3. **Components**: Consume context and services to render UI
+4. **Forms**: Process user input with validation
+
 ## Local Development
 
 ```bash
