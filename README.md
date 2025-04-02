@@ -2,7 +2,7 @@
 
 A modern cryptocurrency discussion forum built with React and Firebase.
 
-**Live Demo:** [https://cw-forums.web.app](https://cw-forums.web.app)
+**Live Demo:** <a href="https://cw-forums.web.app" target="_blank">https://cw-forums.web.app</a>
 
 ## About CW-Forums
 
