@@ -31,6 +31,9 @@ export const Thread = () => {
   const [editedPostContent, setEditedPostContent] = useState('');
   const [showDeletePostConfirm, setShowDeletePostConfirm] = useState(false);
   const [currentDeletingPost, setCurrentDeletingPost] = useState(null);
+  const [deletePostLoading, setDeletePostLoading] = useState(false);
+  const [isEditingPost, setIsEditingPost] = useState(false);
+  const [currentEditingPost, setCurrentEditingPost] = useState(null);
 
   const { threadId } = useParams();
   const { currentUser, isAuthenticated } = useAuth();
@@ -277,7 +280,7 @@ export const Thread = () => {
 
   const confirmDeletePost = async () => {
     try {
-      setLoading(true);
+      setDeletePostLoading(true);
       
       await deletePost(
         currentDeletingPost.id,
@@ -300,7 +303,7 @@ export const Thread = () => {
         setError('Failed to delete post');
       }
     } finally {
-      setLoading(false);
+      setDeletePostLoading(false);
     }
   };
 
@@ -493,8 +496,9 @@ export const Thread = () => {
                             className={`${styles.actionButton} ${styles.deleteButton}`}
                             onClick={() => handleDeletePost(post)}
                             title="Delete Reply"
+                            disabled={deletePostLoading}
                           >
-                            ✕ Delete
+                            {deletePostLoading ? 'Deleting...' : '✕ Delete'}
                           </button>
                         )}
                       </div>
@@ -575,12 +579,14 @@ export const Thread = () => {
               <button 
                 onClick={confirmDeletePost}
                 className={styles.deleteButton}
+                disabled={deletePostLoading}
               >
-                Delete Reply
+                {deletePostLoading ? 'Deleting...' : 'Delete Reply'}
               </button>
               <button 
                 onClick={cancelDeletePost}
                 className={styles.cancelButton}
+                disabled={deletePostLoading}
               >
                 Cancel
               </button>
