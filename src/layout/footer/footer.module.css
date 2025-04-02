@@ -1,15 +1,24 @@
-footer {
+.footer {
     position: fixed;
     bottom: 0;
     width: 100%;
     text-align: center;
     font-family: 'Montserrat', sans-serif;
     box-sizing: border-box;
-    max-width: 1200px; 
-    left: 50%;
-    transform: translateX(-50%); 
     padding: 0.4rem;
     padding-bottom: 0rem;
     background-color: #161618;
     z-index: 1000;
+    left: 0;
+    right: 0;
+}
+
+.footer a {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
+.footer p {
+    margin: 0;
+    color: whitesmoke;
 }

@@ -9,8 +9,10 @@
   color: whitesmoke;
   font-family: 'Montserrat', sans-serif;
   box-sizing: border-box;
+  padding-bottom: 3rem; 
 }
 
 #main-content {
   padding-top: 140px;
+  min-height: calc(100vh - 190px); 
 }
