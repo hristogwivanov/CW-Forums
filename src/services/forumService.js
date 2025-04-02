@@ -60,10 +60,14 @@ export async function getThreadsByCategory(categoryId) {
     );
     const querySnapshot = await getDocs(q);
     
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    return querySnapshot.docs.map(doc => {
+      const threadData = doc.data();
+      return {
+        id: doc.id,
+        ...threadData,
+        replyCount: threadData.postCount ? threadData.postCount - 1 : 0
+      };
+    });
   } catch (error) {
     console.error("Error getting threads:", error);
     throw error;

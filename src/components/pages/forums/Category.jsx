@@ -62,12 +62,6 @@ export const Category = () => {
                     const adminResult = await isUserAdmin(currentUser);
                     const modResult = await isUserModerator(currentUser);
                     
-                    console.log("User role check:", {
-                        userId: currentUser.uid,
-                        isAdmin: adminResult,
-                        isModerator: modResult
-                    });
-                    
                     setIsAdminUser(adminResult);
                     setIsModeratorUser(modResult);
                 } catch (error) {
