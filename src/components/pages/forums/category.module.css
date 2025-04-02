@@ -137,7 +137,32 @@
     margin: 5px 0 0 0;
   }
   
-  .threadAuthor, .threadReplies {
+  .threadAuthor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    text-align: center;
+    flex: 0 0 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #777;
+  }
+  
+  .authorLink {
+    color: #A16BB9;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .authorLink:hover {
+    color: #c28fd8;
+    text-decoration: underline;
+  }
+  
+  .threadReplies {
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -31,6 +31,7 @@ function App() {
             <Route path="/categories/:categoryId" element={<Category />} />
             <Route path="/thread/:threadId" element={<Thread />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:userId" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

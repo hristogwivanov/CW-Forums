@@ -383,7 +383,9 @@ export const Category = () => {
                                 <p className={styles.threadPreview}>{thread.preview}</p>
                             </div>
                             <div className={styles.threadAuthor}>
-                                <span>{thread.createdByUsername || 'Anonymous'}</span>
+                                <Link to={`/profile/${thread.createdBy}`} className={styles.authorLink}>
+                                    {thread.createdByUsername || 'Anonymous'}
+                                </Link>
                             </div>
                             <div className={styles.threadReplies}>
                                 {thread.replyCount || 0}

@@ -421,14 +421,18 @@ export const Thread = () => {
               <div className={styles.postUserSection}>
                 <div className={styles.postAuthorSection}>
                   <div className={styles.postAuthor}>
-                    {post.createdByUsername}
+                    <Link to={`/profile/${post.createdBy}`} className={styles.authorLink}>
+                      {post.createdByUsername}
+                    </Link>
                   </div>
                   <div className={styles.profilePicContainer}>
-                    <img 
-                      src={post.profilePic} 
-                      alt={`${post.createdByUsername}'s profile`} 
-                      className={styles.profilePic}
-                    />
+                    <Link to={`/profile/${post.createdBy}`}>
+                      <img 
+                        src={post.profilePic} 
+                        alt={`${post.createdByUsername}'s profile`} 
+                        className={styles.profilePic}
+                      />
+                    </Link>
                   </div>
                   <div className={styles.postCount}>
                     Posts: {post.userPostCount}

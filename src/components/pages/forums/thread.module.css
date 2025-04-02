@@ -153,22 +153,31 @@
 
 .postAuthor {
   font-weight: bold;
-  color: #fff;
-  word-break: break-word;
   font-size: 16px;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+}
+
+.authorLink {
+  color: #A16BB9;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.authorLink:hover {
+  color: #c28fd8;
+  text-decoration: underline;
 }
 
 .profilePicContainer {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
+  margin: 10px 0;
   border-radius: 4px;
   overflow: hidden;
   border: none;
   flex-shrink: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   background-color: #181818;
-  margin-bottom: 10px;
 }
 
 .profilePic {
