@@ -231,6 +231,13 @@ export const Settings = () => {
             return;
         }
         
+        const MAX_FILE_SIZE = 1 * 1024 * 1024; 
+        if (selectedImage.size > MAX_FILE_SIZE) {
+            const fileSizeMB = (selectedImage.size / (1024 * 1024)).toFixed(2);
+            setError(`Image is too large (${fileSizeMB} MB). Please select an image smaller than 1 MB.`);
+            return;
+        }
+        
         setImageUploadLoading(true);
         setError('');
         setSuccess('');
@@ -255,7 +262,19 @@ export const Settings = () => {
             setSuccess('Profile picture updated successfully!');
         } catch (err) {
             console.error('Error in upload process:', err);
-            setError(`Error updating profile picture: ${err.message}`);
+            
+            if (err.message && err.message.includes('longer than')) {
+                const sizeMatch = err.message.match(/longer than (\d+) bytes/);
+                if (sizeMatch && sizeMatch[1]) {
+                    const bytesSize = parseInt(sizeMatch[1]);
+                    const mbSize = (bytesSize / (1024 * 1024)).toFixed(2);
+                    setError(`Error: Image size exceeds Firestore's limit. Maximum allowed is ${mbSize} MB.`);
+                } else {
+                    setError(`Error: Image is too large. Please choose a smaller image (under 1 MB).`);
+                }
+            } else {
+                setError(`Error uploading profile picture: ${err.message}`);
+            }
         } finally {
             setImageUploadLoading(false);
         }
