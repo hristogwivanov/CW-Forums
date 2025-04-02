@@ -7,7 +7,6 @@
     line-height: 1.3;
 }
 
-/* Force scrollbar to always be visible to prevent page shifting */
 html {
     overflow-y: scroll;
 }

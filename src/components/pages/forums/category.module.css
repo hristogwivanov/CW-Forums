@@ -249,31 +249,41 @@
   }
   
   .formGroup {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
   
   .formGroup label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: 500;
-    color: #e0e0e0;
+    color: #A16BB9;
+    font-size: 1rem;
   }
   
   .formGroup input,
   .formGroup textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #555;
-    border-radius: 4px;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 6px;
     font-family: inherit;
     font-size: 0.95rem;
-    background-color: #444;
-    color: #e0e0e0;
+    background-color: #333;
+    color: whitesmoke;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .formGroup input:focus,
+  .formGroup textarea:focus {
+    outline: none;
+    border-color: #A16BB9;
+    box-shadow: 0 0 0 2px rgba(161, 107, 185, 0.25);
   }
   
   .formGroup textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 120px;
+    line-height: 1.5;
   }
   
   .textArea {
@@ -283,26 +293,48 @@
   .formActions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 20px;
+    margin-top: 25px;
+    gap: 15px;
   }
   
   .formButton {
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
-    font-weight: 500;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+  
+  .formButton:not(.cancelButton) {
+    background-color: #83B925;
+    color: white;
+  }
+  
+  .formButton:not(.cancelButton):hover {
+    background-color: #6fa31e;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  .formButton:not(.cancelButton):active {
+    transform: translateY(0);
   }
   
   .cancelButton {
-    background-color: #555;
-    color: #e0e0e0;
-    margin-right: 10px;
+    background-color: #555 !important;
+    color: whitesmoke !important;
   }
   
   .cancelButton:hover {
-    background-color: #666;
+    background-color: #666 !important;
+  }
+  
+  .formButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
   }
   
   .orderButton {
