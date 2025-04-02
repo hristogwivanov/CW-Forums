@@ -126,6 +126,8 @@
   justify-content: center;
   background-color: #1E1E2D;
   margin-right: 15px;
+  color: #A16BB9;
+  font-size: 18px;
 }
 
 .activityContent {
@@ -169,7 +171,6 @@
   background-color: rgba(161, 107, 185, 0.1);
 }
 
-/* Responsive styles */
 @media (max-width: 768px) {
   .profileHeader {
     flex-direction: column;

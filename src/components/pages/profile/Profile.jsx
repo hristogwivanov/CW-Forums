@@ -13,6 +13,8 @@ import {
     limit 
 } from 'firebase/firestore';
 import styles from './profile.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faReply, faComment } from '@fortawesome/free-solid-svg-icons';
 
 export const Profile = () => {
     const { userId } = useParams();
@@ -180,7 +182,7 @@ export const Profile = () => {
                                 threads.map(thread => (
                                     <div key={thread.id} className={styles.activityItem}>
                                         <div className={styles.activityIcon}>
-                                            <i className="fas fa-comment-alt"></i>
+                                            <FontAwesomeIcon icon={faComment} />
                                         </div>
                                         <div className={styles.activityContent}>
                                             <div className={styles.activityTitle}>
@@ -204,7 +206,7 @@ export const Profile = () => {
                                 replies.map(reply => (
                                     <div key={reply.id} className={styles.activityItem}>
                                         <div className={styles.activityIcon}>
-                                            <i className="fas fa-reply"></i>
+                                            <FontAwesomeIcon icon={faReply} />
                                         </div>
                                         <div className={styles.activityContent}>
                                             <div className={styles.activityTitle}>
