@@ -22,6 +22,7 @@ export const Category = () => {
     const [threadToDelete, setThreadToDelete] = useState(null);
     const [isAdminUser, setIsAdminUser] = useState(false);
     const [isModeratorUser, setIsModeratorUser] = useState(false);
+    const [createThreadLoading, setCreateThreadLoading] = useState(false);
     
     const { categoryId } = useParams();
     const { currentUser, isAuthenticated } = useAuth();
@@ -107,6 +108,7 @@ export const Category = () => {
         
         try {
             if (modalMode === 'create') {
+                setCreateThreadLoading(true);
                 await createThread(
                     categoryId,
                     newThreadTitle,
@@ -123,17 +125,17 @@ export const Category = () => {
                 );
             }
             
+            const updatedThreads = await getThreadsByCategory(categoryId);
+            setThreads(updatedThreads);
+            setModalOpen(false);
             setNewThreadTitle('');
             setNewThreadContent('');
-            setModalOpen(false);
-            
-            const threadsData = await getThreadsByCategory(categoryId);
-            setThreads(threadsData);
-            
             setError('');
-        } catch (error) {
-            console.error('Error creating thread:', error);
-            setError('Failed to create thread');
+        } catch (err) {
+            console.error('Error processing thread:', err);
+            setError(err.message || 'An error occurred while processing the thread');
+        } finally {
+            setCreateThreadLoading(false);
         }
     };
     
@@ -275,8 +277,9 @@ export const Category = () => {
                         <button 
                             className={styles.createThreadBtn}
                             onClick={handleCreateThread}
+                            disabled={createThreadLoading}
                         >
-                            Create New Thread
+                            {createThreadLoading ? 'Creating...' : 'Create New Thread'}
                         </button>
                     )}
                     <Link to="/forums" className={styles.backButton}>
@@ -320,14 +323,19 @@ export const Category = () => {
                             type="button" 
                             className={`${styles.formButton} ${styles.cancelButton}`}
                             onClick={handleCancelCreate}
+                            disabled={createThreadLoading}
                         >
                             Cancel
                         </button>
                         <button 
                             type="submit" 
                             className={styles.formButton}
+                            disabled={createThreadLoading}
                         >
-                            {modalMode === 'create' ? 'Create Thread' : 'Save Changes'}
+                            {modalMode === 'create' 
+                                ? (createThreadLoading ? 'Creating...' : 'Create Thread') 
+                                : (createThreadLoading ? 'Saving...' : 'Save Changes')
+                            }
                         </button>
                     </div>
                 </form>
