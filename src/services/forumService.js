@@ -60,14 +60,22 @@ export async function getThreadsByCategory(categoryId) {
     );
     const querySnapshot = await getDocs(q);
     
-    return querySnapshot.docs.map(doc => {
-      const threadData = doc.data();
+    const threadsPromises = querySnapshot.docs.map(async docSnap => {
+      const threadData = docSnap.data();
+      
+      const creatorRef = doc(db, 'users', threadData.createdBy);
+      const creatorSnap = await getDoc(creatorRef);
+      const creatorData = creatorSnap.exists() ? creatorSnap.data() : null;
+      
       return {
-        id: doc.id,
+        id: docSnap.id,
         ...threadData,
+        createdByUsername: creatorData?.username || threadData.createdByUsername || 'Unknown User',
         replyCount: threadData.postCount ? threadData.postCount - 1 : 0
       };
     });
+    
+    return await Promise.all(threadsPromises);
   } catch (error) {
     console.error("Error getting threads:", error);
     throw error;
@@ -83,9 +91,16 @@ export async function getThreadWithPosts(threadId) {
       throw new Error('Thread not found');
     }
     
+    const threadData = threadSnap.data();
+    
+    const threadCreatorRef = doc(db, 'users', threadData.createdBy);
+    const threadCreatorSnap = await getDoc(threadCreatorRef);
+    const threadCreatorData = threadCreatorSnap.exists() ? threadCreatorSnap.data() : null;
+    
     const thread = {
       id: threadSnap.id,
-      ...threadSnap.data()
+      ...threadData,
+      createdByUsername: threadCreatorData?.username || threadData.createdByUsername || 'Unknown User'
     };
     
     const postsRef = collection(db, 'posts');
@@ -96,14 +111,19 @@ export async function getThreadWithPosts(threadId) {
     );
     const postsSnap = await getDocs(q);
     
-    const postsPromises = postsSnap.docs.map(async doc => {
-      const postData = doc.data();
+    const postsPromises = postsSnap.docs.map(async docSnap => {
+      const postData = docSnap.data();
       const userProfilePic = await getUserProfilePic(postData.createdBy);
       const userPostCount = await getUserPostCount(postData.createdBy);
       
+      const userRef = doc(db, 'users', postData.createdBy);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.exists() ? userSnap.data() : null;
+      
       return {
-        id: doc.id,
+        id: docSnap.id,
         ...postData,
+        createdByUsername: userData?.username || postData.createdByUsername || 'Unknown User',
         profilePic: userProfilePic,
         userPostCount: userPostCount
       };

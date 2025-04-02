@@ -58,14 +58,27 @@ export const UserProvider = ({ children }) => {
         loadUserData();
     }, [currentUser]);
 
-    const updateDisplayName = (name) => {
+    const updateDisplayName = async (name) => {
+        if (!name) return;
+        
         setUserDisplayName(name);
         localStorage.setItem('userDisplayName', name);
         
-        if (currentUser && userData) {
-            const userRef = doc(db, 'users', currentUser.uid);
-            updateDoc(userRef, { username: name })
-                .catch(error => console.error("Error updating display name:", error));
+        if (userData) {
+            setUserData(prev => ({
+                ...prev,
+                username: name
+            }));
+        }
+        
+        if (currentUser) {
+            try {
+                const userRef = doc(db, 'users', currentUser.uid);
+                await updateDoc(userRef, { username: name });
+                console.log("Username updated successfully in user profile");
+            } catch (error) {
+                console.error("Error updating display name:", error);
+            }
         }
     };
 

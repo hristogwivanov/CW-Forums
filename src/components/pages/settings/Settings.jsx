@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useUser } from '../../../contexts/UserContext';
 import { doc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db, storage } from '../../../../firebase.js';
 import { updatePassword, updateEmail, EmailAuthProvider, reauthenticateWithCredential, deleteUser } from 'firebase/auth';
@@ -9,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const Settings = () => {
     const { currentUser } = useAuth();
+    const { updateDisplayName } = useUser();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [profilePic, setProfilePic] = useState('');
@@ -67,10 +69,9 @@ export const Settings = () => {
         setSuccess('');
         
         try {
-            const userRef = doc(db, 'users', currentUser.uid);
-            await updateDoc(userRef, {
-                username: username
-            });
+            if (username) {
+                await updateDisplayName(username);
+            }
             
             if (email !== currentUser.email) {
                 await updateEmail(currentUser, email);
