@@ -13,13 +13,13 @@ export const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const { signup,authError, clearAuthError } = useAuth();
+    const { signup, authError, clearAuthError } = useAuth();
     const { updateDisplayName } = useUser();
 
     const navigate = useNavigate();
     const location = useLocation();
 
-    const registerHandler = async (formData) => {
+    const registerHandler = async () => {
 
         if (username.length < 3) {
             setError('Username must be at least 3 characters long');
@@ -43,6 +43,7 @@ export const Register = () => {
         }
 
         setError('');
+        clearAuthError();
         setLoading(true);
 
         try {
@@ -58,11 +59,24 @@ export const Register = () => {
               navigate('/forums');
             }
         } catch (err) {
-            setError(err.message || 'An error occurred while registering');
+            if (err.code === 'auth/email-already-in-use') {
+                setError('This email is already registered. Please use a different email or try logging in.');
+            } else if (err.code === 'auth/invalid-email') {
+                setError('Please enter a valid email address.');
+            } else if (err.code === 'auth/weak-password') {
+                setError('Password is too weak. Please use a stronger password.');
+            } else {
+                setError(err.message || 'An error occurred while registering');
+            }
             console.error('Registration error:', err);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await registerHandler();
     };
 
     return (
@@ -70,7 +84,7 @@ export const Register = () => {
             {error && <p className="errorMessage">{error}</p>}
             {!error && <br />}
 
-            <form id="register" className="registerForm" action={registerHandler}>
+            <form id="register" className="registerForm" onSubmit={handleSubmit}>
                 <div className="inputDiv">
                     <input
                         type="text"

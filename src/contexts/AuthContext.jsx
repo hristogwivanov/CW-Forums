@@ -31,7 +31,8 @@ export function AuthProvider({ children }) {
       clearAuthError();
       return await signupService(email, password, username);
     } catch (error) {
-      setAuthError(error.message);
+      const errorMessage = getFriendlyAuthErrorMessage(error);
+      setAuthError(errorMessage);
       throw error;
     }
   }
@@ -41,17 +42,38 @@ export function AuthProvider({ children }) {
       clearAuthError();
       return await loginService(username, password);
     } catch (error) {
-      setAuthError(error.message);
+      const errorMessage = getFriendlyAuthErrorMessage(error);
+      setAuthError(errorMessage);
       throw error;
     }
   }
+
+  const getFriendlyAuthErrorMessage = (error) => {
+    const errorCode = error.code || '';
+    
+    const errorMessages = {
+      'auth/invalid-credential': 'Incorrect username or password. Please try again.',
+      'auth/user-not-found': 'No account found with this username. Please check your credentials.',
+      'auth/wrong-password': 'Incorrect password. Please try again.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/user-disabled': 'This account has been disabled. Please contact support.',
+      'auth/too-many-requests': 'Too many unsuccessful login attempts. Please try again later.',
+      'auth/network-request-failed': 'Network error. Please check your internet connection.',
+      'auth/email-already-in-use': 'Email address already in use. Please try a different email address.',
+      'auth/weak-password': 'Password is too weak. Please try a stronger password.',
+      'auth/invalid-display-name': 'Invalid display name. Please try a different display name.'
+    };
+    
+    return errorMessages[errorCode] || error.message || 'An error occurred during authentication. Please try again.';
+  };
 
   async function logout() {
     try {
       clearAuthError();
       await logoutService();
     } catch (error) {
-      setAuthError(error.message);
+      const errorMessage = getFriendlyAuthErrorMessage(error);
+      setAuthError(errorMessage);
       throw error;
     }
   }

@@ -10,7 +10,7 @@ export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { loginByUsername, authError } = useAuth();
+  const { loginByUsername, authError, clearAuthError } = useAuth();
   const { updateDisplayName } = useUser();
 
   const navigate = useNavigate();
@@ -27,6 +27,7 @@ export const Login = () => {
     }
 
     setError("");
+    clearAuthError();
     setLoading(true);
 
     try {
@@ -48,11 +49,16 @@ export const Login = () => {
         navigate("/forums");
       }
     } catch (err) {
-      setError(authError || err.message || "Failed to login");
+      setError(err.message || "Failed to login. Please check your credentials.");
       console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await loginHandler();
   };
 
   return (
@@ -60,7 +66,7 @@ export const Login = () => {
       {error && <p className="errorMessage">{error}</p>}
       {!error && <br />}
 
-      <form id="login" className="loginForm" action={loginHandler}>
+      <form id="login" className="loginForm" onSubmit={handleSubmit}>
         <div className="inputDiv">
           <input
             type="text"

@@ -21,7 +21,6 @@ footer{
     font-weight: bold;
 }
 
-
 a, span{
     margin: 0em;
     text-decoration: none;
@@ -43,7 +42,6 @@ input, textarea{
     font-size: 1em;
     text-decoration: none;
     float: right;
-    /* background: rgba(161, 107, 185, 0.2); */
     border-radius: 0.3em;
     padding: 0.4em 1em;
     margin-top: 3em;
