@@ -216,7 +216,7 @@ export const Settings = () => {
             
             await deleteUser(currentUser);
             
-            navigate('/');
+            navigate('/forums');
         } catch (err) {
             console.error('Error deleting account:', err);
             setDeleteAccountLoading(false);
