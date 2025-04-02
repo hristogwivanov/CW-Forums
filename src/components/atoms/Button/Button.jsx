@@ -1,6 +1,12 @@
 import styles from './button.module.css'
-export const Button = ({ type, text }) => {
+
+export const Button = ({ type, text, className }) => {
     return (
-        <button type={type}>{text}</button>
+        <button 
+            type={type} 
+            className={`${styles.button} ${className || ''}`}
+        >
+            {text}
+        </button>
     )
 }

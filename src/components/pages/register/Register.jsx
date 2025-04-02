@@ -4,7 +4,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { useUser } from '../../../contexts/UserContext';
 
 import { Link } from 'react-router';
-import { Button } from '../../atoms/button/Button';
+import { Button } from '../../atoms/Button/Button';
 
 export const Register = () => {
     const [error, setError] = useState('');
