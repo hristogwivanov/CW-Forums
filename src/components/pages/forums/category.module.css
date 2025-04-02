@@ -2,7 +2,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    color: #333;
+    color: #e0e0e0;
   }
   
   .categoryHeader {
@@ -22,7 +22,7 @@
   
   .categoryDescription {
     margin: 0;
-    color: #555;
+    color: #e0e0e0;
     font-size: 0.95rem;
     line-height: 1.5;
   }
@@ -51,8 +51,8 @@
   }
   
   .backButton {
-    background-color: #f5f5f5;
-    color: #555;
+    background-color: #e0e0e0;
+    color: #222;
     border: none;
     padding: 10px 16px;
     border-radius: 4px;
@@ -64,11 +64,11 @@
   }
   
   .backButton:hover {
-    background-color: #e0e0e0;
+    background-color: #cccccc;
   }
   
   .threadsList {
-    background-color: white;
+    background-color: #333;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     overflow: hidden;
@@ -78,10 +78,10 @@
     display: grid;
     grid-template-columns: 3fr 1fr 0.8fr 1.2fr;
     padding: 16px 20px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #eee;
+    background-color: #222;
+    border-bottom: 1px solid #555;
     font-weight: 600;
-    color: #444;
+    color: #A16BB9;
     text-align: center;
   }
   
@@ -89,16 +89,20 @@
     text-align: left;
   }
   
+  .threadsHeader div:nth-child(2) {
+    color: #A16BB9;
+  }
+  
   .threadItem {
     display: grid;
     grid-template-columns: 3fr 1fr 0.8fr 1.2fr;
     padding: 16px 20px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #555;
     transition: background-color 0.2s;
   }
   
   .threadItem:hover {
-    background-color: #f9f9f9;
+    background-color: #444;
   }
   
   .threadTitle {
@@ -107,7 +111,7 @@
   
   .threadTitle a {
     text-decoration: none;
-    color: #673ab7;
+    color: whitesmoke;
     font-weight: 500;
     font-size: 1.1rem;
     transition: color 0.2s;
@@ -116,7 +120,7 @@
   }
   
   .threadTitle a:hover {
-    color: #5e35b1;
+    color: #ffffff;
     text-decoration: underline;
   }
   
@@ -132,7 +136,7 @@
   }
   
   .threadPreview {
-    color: #666;
+    color: #e0e0e0;
     font-size: 0.85rem;
     margin: 5px 0 0 0;
   }
@@ -148,17 +152,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #777;
+    color: whitesmoke;
   }
   
   .authorLink {
-    color: #A16BB9;
+    color: whitesmoke;
     text-decoration: none;
     transition: color 0.2s ease;
   }
   
   .authorLink:hover {
-    color: #c28fd8;
+    color: #ffffff;
     text-decoration: underline;
   }
   
@@ -188,7 +192,7 @@
   
   .threadDate {
     font-size: 0.8rem;
-    color: #888;
+    color: whitesmoke;
   }
   
   .threadActions {
@@ -200,8 +204,8 @@
   .noThreads {
     padding: 40px 20px;
     text-align: center;
-    color: #666;
-    background-color: white;
+    color: #e0e0e0;
+    background-color: #333;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   }
@@ -216,12 +220,12 @@
   }
   
   .loading {
-    color: #666;
+    color: #e0e0e0;
     font-size: 1.1rem;
   }
   
   .errorMessage {
-    background-color: #ffebee;
+    background-color: #333;
     color: #c62828;
     padding: 12px;
     border-radius: 4px;
@@ -231,7 +235,7 @@
   
   /* Thread form styles */
   .threadForm {
-    background-color: #f9f9f9;
+    background-color: #333;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 8px;
@@ -253,17 +257,19 @@
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
-    color: #333;
+    color: #e0e0e0;
   }
   
   .formGroup input,
   .formGroup textarea {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #555;
     border-radius: 4px;
     font-family: inherit;
     font-size: 0.95rem;
+    background-color: #444;
+    color: #e0e0e0;
   }
   
   .formGroup textarea {
@@ -278,32 +284,26 @@
   .formActions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
     margin-top: 20px;
   }
   
   .formButton {
-    padding: 10px 16px;
+    padding: 10px 20px;
     border: none;
     border-radius: 4px;
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s;
-    background-color: #83B925;
-    color: white;
-  }
-  
-  .formButton:hover {
-    background-color: #6fa31e;
   }
   
   .cancelButton {
-    background-color: #e0e0e0;
-    color: #333;
+    background-color: #555;
+    color: #e0e0e0;
+    margin-right: 10px;
   }
   
   .cancelButton:hover {
-    background-color: #ccc;
+    background-color: #666;
   }
   
   .orderButton {
@@ -346,6 +346,16 @@
     display: flex;
     align-items: center;
     margin-top: 8px;
+  }
+  
+  /* Confirmation modal styles */
+  .confirmDeleteContent {
+    padding: 15px;
+    color: #e0e0e0;
+  }
+  
+  .confirmDeleteContent p {
+    margin-bottom: 20px;
   }
   
   @media (max-width: 768px) {
