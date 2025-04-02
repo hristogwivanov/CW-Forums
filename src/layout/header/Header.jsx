@@ -11,7 +11,6 @@ export const Header = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/forums');
     } catch (err) {
       console.error("Logout error:", err);    
     }
