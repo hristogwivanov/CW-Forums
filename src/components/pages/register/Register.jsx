@@ -122,6 +122,7 @@ export const Register = () => {
                     type="submit"
                     text="Register"
                     disabled={loading}
+                    loading={loading}
                 />
 
                 <p className="field">

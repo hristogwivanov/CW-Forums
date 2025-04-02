@@ -84,7 +84,12 @@ export const Login = () => {
           />
         </div>
 
-        <Button type="submit" text="Login" disabled={loading} />
+        <Button 
+          type="submit" 
+          text="Login" 
+          disabled={loading}
+          loading={loading}
+        />
 
         <p className="field">
           <span>
