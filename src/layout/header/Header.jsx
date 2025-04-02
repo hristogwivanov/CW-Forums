@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUser } from "../../contexts/UserContext";
 import styles from "./Header.module.css";
@@ -6,12 +6,15 @@ import styles from "./Header.module.css";
 export const Header = () => {
   const { isAuthenticated, logout, currentUser } = useAuth();
   const { userName } = useUser();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await logout();
+      navigate('/forums');
     } catch (err) {
-      console.error("Logout error:", err);    }
+      console.error("Logout error:", err);    
+    }
   };
 
   return (
