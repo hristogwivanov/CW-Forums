@@ -50,6 +50,18 @@ CW-Forums offers comprehensive coverage of the cryptocurrency ecosystem through 
 - **Frontend**: React with Vite, React Router, Context API
 - **Backend**: Firebase (Authentication, Firestore, Hosting)
 - **Styling**: CSS Modules for component-scoped styling
+- **Testing**: Vitest and React Testing Library for unit testing components
+
+## Testing
+
+The application includes a comprehensive unit testing suite using Vitest and React Testing Library:
+
+- **Component Testing**: Key components are tested to ensure proper rendering and functionality
+  - **Header**: Navigation links, logo display, and theme-consistent styling
+  - **Login**: Form elements, input validation, and registration links
+  - **NotFound**: Error messages, navigation buttons, and dark theme styling
+- **Test Structure**: Tests focus on validating component presence, proper styling classes, and user interface elements
+- **Mock Components**: Testing uses mock components to isolate functionality and prevent dependency issues
 
 ## Project Architecture
 
