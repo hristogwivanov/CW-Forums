@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useUser } from "../../contexts/UserContext";
-import styles from "./Header.module.css";
+import styles from "./header.module.css";
 
 export const Header = () => {
   const { isAuthenticated, logout, currentUser } = useAuth();
